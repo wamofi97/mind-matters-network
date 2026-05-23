@@ -1,0 +1,133 @@
+@import "tailwindcss";
+
+/* ─── Mind Matters Network — Design Tokens ─── */
+
+@theme inline {
+  /* Moodboard palette */
+  --color-cream: #f2f3ef;
+  --color-ink: #081d56;
+  --color-deep-green: #0e605e;
+  --color-sage: #63a8aa;
+  --color-lilac: #6773c6;
+  --color-coral: #f07c7c;
+  --color-butter: #f6e7a1;
+  --color-sage-soft: #d8efea;
+  --color-lilac-soft: #e9e6fb;
+  --color-warm-taupe: #2e2a24;
+
+  /* Semantic tokens */
+  --color-background: var(--color-cream);
+  --color-foreground: var(--color-ink);
+  --color-primary: var(--color-deep-green);
+  --color-primary-foreground: var(--color-cream);
+  --color-secondary: var(--color-sage);
+  --color-secondary-foreground: var(--color-ink);
+  --color-accent: var(--color-coral);
+  --color-accent-foreground: var(--color-ink);
+  --color-muted: var(--color-sage-soft);
+  --color-muted-foreground: #3d4a6b;
+  --color-card: #ffffff;
+  --color-card-foreground: var(--color-ink);
+  --color-border: #d4ddd9;
+  --color-ring: var(--color-sage);
+  --color-destructive: var(--color-coral);
+
+  /* Tag / pill accents */
+  --color-tag-butter: var(--color-butter);
+  --color-tag-coral: var(--color-coral);
+  --color-tag-mint: var(--color-sage-soft);
+  --color-tag-lilac: var(--color-lilac-soft);
+
+  /* Typography */
+  --font-heading: var(--font-fraunces), ui-serif, Georgia, serif;
+  --font-body: var(--font-plus-jakarta), ui-sans-serif, system-ui, sans-serif;
+
+  /* Radii */
+  --radius-card: 32px;
+  --radius-button: 9999px;
+  --radius-input: 16px;
+  --radius-lg: 24px;
+  --radius-md: 16px;
+  --radius-sm: 12px;
+
+  /* Shadows — soft & airy */
+  --shadow-soft: 0 4px 24px -4px rgb(8 29 86 / 0.06);
+  --shadow-card: 0 8px 32px -8px rgb(8 29 86 / 0.08);
+  --shadow-float: 0 12px 40px -12px rgb(14 96 94 / 0.1);
+
+  /* Spacing scale (editorial) */
+  --spacing-section-sm: 4rem;
+  --spacing-section-md: 6rem;
+  --spacing-section-lg: 8rem;
+  --spacing-section-xl: 10rem;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-background text-foreground font-body antialiased;
+    font-feature-settings: "kern" 1, "liga" 1;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    @apply font-heading tracking-tight text-foreground;
+  }
+
+  h1 {
+    @apply text-5xl font-bold leading-[1.05] sm:text-6xl lg:text-7xl xl:text-8xl;
+  }
+
+  h2 {
+    @apply text-4xl font-bold leading-[1.1] sm:text-5xl lg:text-6xl;
+  }
+
+  h3 {
+    @apply text-3xl font-semibold leading-tight sm:text-4xl;
+  }
+
+  p {
+    @apply leading-relaxed text-muted-foreground;
+  }
+
+  a {
+    @apply transition-colors duration-300 ease-out;
+  }
+
+  ::selection {
+    @apply bg-lilac-soft text-ink;
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  .font-heading {
+    font-family: var(--font-heading);
+  }
+
+  .font-body {
+    font-family: var(--font-body);
+  }
+
+  .shadow-soft {
+    box-shadow: var(--shadow-soft);
+  }
+
+  .shadow-card {
+    box-shadow: var(--shadow-card);
+  }
+
+  .rounded-card {
+    border-radius: var(--radius-card);
+  }
+}

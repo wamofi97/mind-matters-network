@@ -48,4 +48,20 @@ export const siteConfig = {
   description:
     "Safe, welcoming spaces for young people to connect, heal, and grow together.",
   donateHref: "/donate",
+  joinHref: "/get-involved",
+  instagram: "@mindmattersnetwork",
 } as const;
+
+export const footerExploreLinks = [
+  { label: "About", href: "/about" },
+  { label: "Events", href: "/events" },
+  { label: "Resources", href: "/resources" },
+  { label: "Get Involved", href: "/get-involved" },
+] as const;
+
+export const footerSupportLinks = [
+  { label: "Contact", href: "/contact" },
+  { label: "Donate", href: "/donate" },
+  { label: "Crisis Help", href: "/crisis-help" },
+  { label: "FAQ", href: "/faq" },
+] as const;

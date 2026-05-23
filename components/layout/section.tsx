@@ -58,7 +58,6 @@ export function Section({
       whileInView="visible"
       viewport={{ once: true, margin: "-80px" }}
       variants={fadeUpVariants}
-      {...props}
     >
       {content}
     </motion.section>

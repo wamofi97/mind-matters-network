@@ -12,13 +12,13 @@ import { cn } from "@/lib/utils";
 
 export function HeroSection() {
   return (
-    <section className="relative overflow-hidden pb-16 pt-24 md:pb-24 md:pt-28 lg:pb-32 lg:pt-32">
+    <section className="relative flex items-center justify-center lg:h-screen overflow-hidden pb-16 pt-24 md:pb-24 md:pt-28 lg:pb-32 lg:pt-32">
       <div
         className="pointer-events-none absolute -right-32 top-20 size-[420px] rounded-full bg-butter/50 blur-3xl"
         aria-hidden
       />
       <div
-        className="pointer-events-none absolute left-1/3 top-1/2 size-72 rounded-full bg-coral/15 blur-3xl"
+        className="pointer-events-none absolute left-1/3 top-1/2 size-72 rounded-full bg-coral/25 blur-3xl"
         aria-hidden
       />
 
@@ -28,20 +28,20 @@ export function HeroSection() {
             initial="hidden"
             animate="visible"
             variants={fadeUpVariants}
-            className="relative z-10 max-w-xl"
+            className="relative z-10 flex flex-col items-center justify-center lg:block "
           >
             <span className="inline-block rounded-full border border-border/80 bg-white/70 px-4 py-1.5 font-body text-xs font-medium text-ink shadow-soft sm:text-sm">
               A youth-led mental health movement
             </span>
 
-            <h1 className="mt-6 font-heading text-[2.75rem] font-bold leading-[1.02] tracking-tight text-ink sm:text-6xl lg:text-[4.25rem] xl:text-[4.75rem]">
+            <h1 className="mt-6 font-heading text-center lg:text-left text-[2.75rem] font-bold leading-[1.02] tracking-tight text-ink sm:text-5xl lg:text-[3.25rem] xl:text-6xl ">
               Uniting youth for{" "}
-              <em className="text-coral not-italic">mental health</em>
+              <em className="text-coral not-italic text-nowrap">mental health</em>
               <br />
-              awareness.
+              <span className="italic">awareness.</span>
             </h1>
 
-            <p className="mt-6 max-w-md text-base leading-relaxed text-muted-foreground sm:text-lg">
+            <p className="mt-6 max-w-md text-center lg:text-left text-base leading-relaxed text-muted-foreground sm:text-lg">
               We are building a kinder generation through real conversations,
               free resources, and a community that shows up for each other.
             </p>
@@ -112,20 +112,20 @@ export function HeroSection() {
               <motion.div
                 animate={{ y: [-4, 4, -4] }}
                 transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
-                className="absolute -left-2 top-8 z-10 sm:left-0 sm:top-12"
+                className="absolute -left-2 top-8 z-10 sm:left-0 sm:top-12 -rotate-4"
               >
                 <span className="inline-block rounded-2xl rounded-bl-sm bg-butter px-4 py-2.5 font-body text-sm font-semibold text-ink shadow-soft">
-                  you matter
+                  you matter 🍁
                 </span>
               </motion.div>
 
               <motion.div
                 animate={{ y: [4, -4, 4] }}
                 transition={{ duration: 7, repeat: Infinity, ease: "easeInOut" }}
-                className="absolute -bottom-2 right-0 z-10 sm:right-4"
+                className="absolute -bottom-2 right-0 z-10 sm:right-4 rotate-4"
               >
-                <span className="inline-block rounded-2xl rounded-br-sm bg-sage px-4 py-2.5 font-body text-sm font-semibold text-cream shadow-soft">
-                  it&apos;s okay to not be okay
+                <span className="inline-block rounded-2xl rounded-br-sm bg-sage-soft px-4 py-2.5 font-body text-sm font-semibold text-ink shadow-soft">
+                  it&apos;s okay to not be okay ☘️
                 </span>
               </motion.div>
             </div>

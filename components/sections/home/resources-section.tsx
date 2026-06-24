@@ -54,7 +54,7 @@ export function ResourcesSection() {
               <motion.article
                 key={resource.title}
                 variants={fadeUpVariants}
-                className="flex flex-col rounded-[32px] border border-border/60 bg-card p-7 shadow-soft transition-all duration-300 hover:-translate-y-1 hover:shadow-card lg:p-8"
+                className="flex flex-col rounded-card border border-border/60 bg-card p-7 shadow-soft transition-all duration-300 hover:-translate-y-1 hover:shadow-card lg:p-8"
               >
                 <span
                   className={cn(

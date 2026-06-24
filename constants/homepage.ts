@@ -1,8 +1,30 @@
+import { BookOpen, Building2, Sparkles, Users } from "lucide-react";
+
 export const stats = [
-  { value: "2445", label: "Total Event Participants", tone: "coral" as const },
-  { value: "2000", label: "Handbooks distributed", tone: "butter" as const },
-  { value: "51", label: "Partner institutions", tone: "mint" as const },
-  { value: "20", label: "Initiatives", tone: "lilac" as const },
+  {
+    value: "2445",
+    label: "Total Event Participants",
+    tone: "coral" as const,
+    icon: Users,
+  },
+  {
+    value: "2000",
+    label: "Handbooks distributed",
+    tone: "butter" as const,
+    icon: BookOpen,
+  },
+  {
+    value: "51",
+    label: "Partner institutions",
+    tone: "mint" as const,
+    icon: Building2,
+  },
+  {
+    value: "20",
+    label: "Initiatives",
+    tone: "lilac" as const,
+    icon: Sparkles,
+  },
 ];
 
 export const events = [
@@ -52,11 +74,6 @@ export const resources = [
     href: "/resources/journaling-circle",
   },
 ];
-
-export const partnerLogos = Array.from({ length: 12 }, (_, i) => ({
-  id: i + 1,
-  name: `Partner ${i + 1}`,
-}));
 
 export const instagramPosts = [
   {

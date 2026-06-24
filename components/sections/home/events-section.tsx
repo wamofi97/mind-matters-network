@@ -41,9 +41,9 @@ export function EventsSection() {
             <motion.article
               key={event.title}
               variants={fadeUpVariants}
-              className="group flex flex-col overflow-hidden rounded-[32px] bg-card shadow-soft transition-all duration-300 hover:-translate-y-1 hover:shadow-card"
+              className="group flex flex-col overflow-hidden rounded-card bg-card shadow-soft transition-all duration-300 hover:-translate-y-1 hover:shadow-card"
             >
-              <div className="relative aspect-[4/3] overflow-hidden">
+              <div className="relative aspect-4/3 overflow-hidden">
                 <Image
                   src={event.image}
                   alt={event.title}

@@ -35,7 +35,7 @@ export const footerLinkGroups = [
     title: "Community",
     links: [
       { label: "Newsletter", href: "#newsletter" },
-      { label: "Instagram", href: "https://instagram.com" },
+      { label: "Instagram", href: "https://www.instagram.com/mindmattersmy/" },
       { label: "Volunteer", href: "/get-involved" },
       { label: "Partners", href: "/partners" },
     ],
@@ -49,7 +49,9 @@ export const siteConfig = {
     "Safe, welcoming spaces for young people to connect, heal, and grow together.",
   donateHref: "/donate",
   joinHref: "/get-involved",
-  instagram: "@mindmattersnetwork",
+  instagram: "@mindmattersmy",
+  instagramUsername: "mindmattersmy",
+  instagramUrl: "https://www.instagram.com/mindmattersmy/",
 } as const;
 
 export const footerExploreLinks = [

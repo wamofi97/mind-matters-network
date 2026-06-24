@@ -1,4 +1,8 @@
-export type SubmissionKind = "contact" | "involvement" | "eventRegistration";
+export type SubmissionKind =
+  | "contact"
+  | "involvement"
+  | "eventRegistration"
+  | "newsletter";
 
 export type SubmissionPayload = {
   kind: SubmissionKind;

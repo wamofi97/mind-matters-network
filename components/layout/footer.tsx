@@ -1,9 +1,9 @@
 import Link from "next/link";
 import { type SiteSettings } from "@/lib/content/site";
 import { getSocialIcon } from "@/lib/content/icons";
-import { Button } from "@/components/ui/button";
 import { Logo } from "@/components/shared/logo";
 import { Container } from "./container";
+import { NewsletterForm } from "./newsletter-form";
 import { OrganicCornerShape } from "@/components/decorations/organic-shapes";
 
 type FooterProps = {
@@ -35,26 +35,10 @@ export function Footer({ settings }: FooterProps) {
             <p className="mt-4 font-body text-sm text-cream/70 sm:text-base">
               {settings.newsletterText}
             </p>
-            <form
-              className="mt-7 flex max-w-md items-center gap-3"
-              action="#"
-              aria-label="Newsletter signup"
-            >
-              <input
-                type="email"
-                placeholder={settings.newsletterPlaceholder}
-                className="h-12 min-w-0 flex-1 rounded-full border border-cream/20 bg-cream/10 px-5 font-body text-sm text-cream placeholder:text-cream/50 focus:outline-none focus:ring-2 focus:ring-sage"
-                aria-label="Email address"
-              />
-              <Button
-                variant="unstyled"
-                size="none"
-                type="submit"
-                className="h-12 shrink-0 rounded-full bg-sage px-7 font-body text-sm font-semibold text-cream transition-colors hover:bg-sage/90"
-              >
-                {settings.newsletterButtonLabel}
-              </Button>
-            </form>
+            <NewsletterForm
+              placeholder={settings.newsletterPlaceholder}
+              buttonLabel={settings.newsletterButtonLabel}
+            />
           </div>
 
           <div className="grid gap-10 sm:grid-cols-3 lg:gap-0">

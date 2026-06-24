@@ -4,7 +4,12 @@ import { writeClient } from "@/sanity/lib/write-client";
 
 export const runtime = "nodejs";
 
-const KINDS = ["contact", "involvement", "eventRegistration"] as const;
+const KINDS = [
+  "contact",
+  "involvement",
+  "eventRegistration",
+  "newsletter",
+] as const;
 type SubmissionKind = (typeof KINDS)[number];
 
 const MAX_FIELD = 500;
@@ -69,7 +74,10 @@ export async function POST(req: NextRequest) {
   const phone = clean(body.phone);
   const message = clean(body.message, MAX_MESSAGE);
 
-  if (!name) return badRequest("Please enter your name.");
+  // Newsletter signups are email-only; every other kind collects a name.
+  if (kind !== "newsletter" && !name) {
+    return badRequest("Please enter your name.");
+  }
   if (email && !EMAIL_RE.test(email)) {
     return badRequest("Please enter a valid email address.");
   }
@@ -82,6 +90,11 @@ export async function POST(req: NextRequest) {
     submittedAt: new Date().toISOString(),
     source: clean(body.source),
   };
+
+  if (kind === "newsletter") {
+    if (!email) return badRequest("Please enter your email.");
+    doc.email = email;
+  }
 
   if (kind === "contact") {
     if (!email) return badRequest("Please enter your email.");

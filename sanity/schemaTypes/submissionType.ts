@@ -5,6 +5,7 @@ const kindOptions = [
   { title: "Contact", value: "contact" },
   { title: "Get Involved", value: "involvement" },
   { title: "Event Registration", value: "eventRegistration" },
+  { title: "Newsletter", value: "newsletter" },
 ];
 
 const statusOptions = [
@@ -14,9 +15,10 @@ const statusOptions = [
 ];
 
 /**
- * Form submissions captured from the public site (contact, get involved, and
- * event registration forms). These are written by `app/api/submissions` and are
- * read-only inbox items — never edited as content. Triage via the `status` field.
+ * Form submissions captured from the public site (contact, get involved, event
+ * registration, and newsletter forms). These are written by
+ * `app/api/submissions` and are read-only inbox items — never edited as content.
+ * Triage via the `status` field.
  */
 export const submissionType = defineType({
   name: "submission",
@@ -46,7 +48,8 @@ export const submissionType = defineType({
       name: "name",
       title: "Name",
       type: "string",
-      validation: (rule) => rule.required(),
+      // Not required at the schema level: newsletter signups are email-only.
+      // The API enforces name for the kinds that collect it.
     }),
     defineField({
       name: "email",
@@ -119,12 +122,13 @@ export const submissionType = defineType({
   preview: {
     select: {
       name: "name",
+      email: "email",
       kind: "kind",
       status: "status",
       eventTitle: "eventTitle",
       subject: "subject",
     },
-    prepare({ name, kind, status, eventTitle, subject }) {
+    prepare({ name, email, kind, status, eventTitle, subject }) {
       const kindLabel =
         kindOptions.find((option) => option.value === kind)?.title ?? kind;
       const statusLabel =
@@ -133,7 +137,7 @@ export const submissionType = defineType({
         "New";
       const detail = eventTitle || subject;
       return {
-        title: name || "(no name)",
+        title: name || email || "(no name)",
         subtitle: [kindLabel, statusLabel, detail]
           .filter(Boolean)
           .join(" · "),

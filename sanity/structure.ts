@@ -138,6 +138,10 @@ export const structure: StructureResolver = (S, context) =>
                     "Event"
                   )
                 ),
+              S.listItem()
+                .title("Newsletter")
+                .id("submissions-newsletter")
+                .child(submissionList(S, "newsletter", "Newsletter")),
             ])
         ),
       S.divider(),

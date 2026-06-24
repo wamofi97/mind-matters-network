@@ -25,6 +25,7 @@ const KIND_OPTIONS = [
   { value: "contact", label: "Contact" },
   { value: "involvement", label: "Get Involved" },
   { value: "eventRegistration", label: "Event Registrations" },
+  { value: "newsletter", label: "Newsletter" },
 ];
 
 const PRESET_OPTIONS = [

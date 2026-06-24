@@ -19,7 +19,8 @@ export type ResourceContent = {
   description: string;
   icon: string;
   tone: ResourceTone;
-  href: string;
+  /** Undefined when no file has been uploaded and no external URL is set. */
+  href?: string;
 };
 
 const resourcesQuery = `*[_type == "resource"] | order(year desc, title asc) {
@@ -38,7 +39,7 @@ function mapResource(doc: SanityResource): ResourceContent {
   const { fileUrl, externalUrl, ...rest } = doc;
   return {
     ...rest,
-    href: fileUrl || externalUrl || `/resources/${doc.slug}`,
+    href: fileUrl || externalUrl || undefined,
   };
 }
 

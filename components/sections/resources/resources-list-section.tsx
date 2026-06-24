@@ -134,17 +134,26 @@ export function ResourcesListSection({ resources }: ResourcesListSectionProps) {
                   />
                 </p>
 
-                <Button
-                  variant="unstyled"
-                  size="none"
-                  className="mt-6 w-fit rounded-full border border-border bg-card px-4 py-2 font-body text-sm font-semibold text-ink shadow-soft transition-all duration-300 hover:border-ink/30 hover:bg-ink/5"
-                  asChild
-                >
-                  <Link href={resource.href}>
-                    Download
-                    <Download className="size-4" />
-                  </Link>
-                </Button>
+                {resource.href ? (
+                  <Button
+                    variant="unstyled"
+                    size="none"
+                    className="mt-6 w-fit rounded-full border border-border bg-card px-4 py-2 font-body text-sm font-semibold text-ink shadow-soft transition-all duration-300 hover:border-ink/30 hover:bg-ink/5"
+                    asChild
+                  >
+                    <Link href={resource.href}>
+                      Download
+                      <Download className="size-4" />
+                    </Link>
+                  </Button>
+                ) : (
+                  <span
+                    className="mt-6 inline-flex w-fit cursor-not-allowed items-center gap-2 rounded-full border border-dashed border-border bg-card px-4 py-2 font-body text-sm font-semibold text-ink/40"
+                    aria-disabled
+                  >
+                    Coming soon
+                  </span>
+                )}
               </motion.article>
             );
           })}

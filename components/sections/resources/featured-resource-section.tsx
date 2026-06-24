@@ -60,16 +60,25 @@ export function FeaturedResourceSection({
               </div>
             </div>
 
-            <Button
-              variant="primary"
-              className="w-fit shrink-0 bg-cream text-ink hover:bg-cream/90"
-              asChild
-            >
-              <Link href={href}>
-                Download free PDF
-                <Download className="size-4" />
-              </Link>
-            </Button>
+            {href ? (
+              <Button
+                variant="primary"
+                className="w-fit shrink-0 bg-cream text-ink hover:bg-cream/90"
+                asChild
+              >
+                <Link href={href}>
+                  Download free PDF
+                  <Download className="size-4" />
+                </Link>
+              </Button>
+            ) : (
+              <span
+                className="inline-flex w-fit shrink-0 cursor-not-allowed items-center gap-2 rounded-full bg-cream/40 px-6 py-3 font-body text-sm font-semibold text-ink/50"
+                aria-disabled
+              >
+                Coming soon
+              </span>
+            )}
           </div>
         </motion.div>
       </Container>

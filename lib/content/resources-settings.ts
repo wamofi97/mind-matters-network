@@ -8,7 +8,8 @@ export type FeaturedResource = {
   tag: string;
   title: string;
   description: string;
-  href: string;
+  /** Undefined when no file has been uploaded and no external URL is set. */
+  href?: string;
   icon: string;
 };
 
@@ -61,7 +62,7 @@ export async function getResourcesSettings(): Promise<ResourcesSettings> {
       tag: doc?.featured?.tag ?? FALLBACK_FEATURED.tag,
       title: doc?.featured?.title ?? FALLBACK_FEATURED.title,
       description: doc?.featured?.description ?? FALLBACK_FEATURED.description,
-      href: doc?.featured?.href ?? FALLBACK_FEATURED.href,
+      href: doc?.featured?.href || undefined,
       icon: doc?.featured?.icon ?? FALLBACK_FEATURED.icon,
     },
   };

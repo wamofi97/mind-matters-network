@@ -212,7 +212,8 @@ export type HomeResourceTeaser = {
   description: string;
   icon: string;
   tone: "butter" | "coral" | "mint" | "lilac";
-  href: string;
+  /** Undefined when no file has been uploaded and no external URL is set. */
+  href?: string;
 };
 
 function titleCaseMonth(month: string): string {

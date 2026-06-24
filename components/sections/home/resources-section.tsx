@@ -75,13 +75,22 @@ export function ResourcesSection({ resources, heading }: ResourcesSectionProps) 
                 <p className="mt-2 flex-1 font-body text-sm leading-relaxed text-muted-foreground sm:text-base">
                   {resource.description}
                 </p>
-                <Link
-                  href={resource.href}
-                  className="mt-6 inline-flex items-center gap-1.5 font-body text-sm font-semibold text-ink transition-colors hover:text-coral"
-                >
-                  Download
-                  <ArrowRight className="size-4" />
-                </Link>
+                {resource.href ? (
+                  <Link
+                    href={resource.href}
+                    className="mt-6 inline-flex items-center gap-1.5 font-body text-sm font-semibold text-ink transition-colors hover:text-coral"
+                  >
+                    Download
+                    <ArrowRight className="size-4" />
+                  </Link>
+                ) : (
+                  <span
+                    className="mt-6 inline-flex items-center gap-1.5 font-body text-sm font-semibold text-ink/40"
+                    aria-disabled
+                  >
+                    Coming soon
+                  </span>
+                )}
               </motion.article>
             );
           })}

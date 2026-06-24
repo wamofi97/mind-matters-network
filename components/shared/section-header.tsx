@@ -17,7 +17,7 @@ export function SectionLabel({
   return (
     <p
       className={cn(
-        "font-body text-sm font-semibold uppercase tracking-[0.2em] text-sage",
+        "rounded-full bg-card px-4 py-1 border w-fit border-border font-body text-sm font-semibold  tracking-wider text-ink",
         className
       )}
     >

@@ -5,14 +5,16 @@ import Link from "next/link";
 import { Download } from "lucide-react";
 import { motion } from "framer-motion";
 import { Container } from "@/components/layout/container";
+import { Button } from "@/components/ui/button";
 import { SearchBar } from "@/components/ui/search-bar";
 import { Highlight } from "@/components/ui/highlight";
 import {
-  resources,
   resourceFilters,
   type ResourceFilter,
   type ResourceTone,
 } from "@/constants/resources";
+import { type ResourceContent } from "@/lib/content/resources";
+import { getResourceIcon } from "@/lib/content/icons";
 import { useDebouncedValue } from "@/hooks/use-debounced-value";
 import { fadeUpVariants, staggerContainer } from "@/lib/motion";
 import { cn } from "@/lib/utils";
@@ -24,7 +26,11 @@ const iconColors: Record<ResourceTone, string> = {
   lilac: "bg-lilac-soft text-lilac",
 };
 
-export function ResourcesListSection() {
+type ResourcesListSectionProps = {
+  resources: ResourceContent[];
+};
+
+export function ResourcesListSection({ resources }: ResourcesListSectionProps) {
   const [filter, setFilter] = useState<ResourceFilter>("all");
   const [query, setQuery] = useState("");
   const debouncedQuery = useDebouncedValue(query);
@@ -54,8 +60,10 @@ export function ResourcesListSection() {
             {resourceFilters.map((tab) => {
               const isActive = filter === tab.value;
               return (
-                <button
+                <Button
                   key={tab.value}
+                  variant="unstyled"
+                  size="none"
                   type="button"
                   onClick={() => setFilter(tab.value)}
                   aria-pressed={isActive}
@@ -67,7 +75,7 @@ export function ResourcesListSection() {
                   )}
                 >
                   {tab.label}
-                </button>
+                </Button>
               );
             })}
           </div>
@@ -89,7 +97,7 @@ export function ResourcesListSection() {
             variants={staggerContainer}
           >
             {filteredResources.map((resource) => {
-            const Icon = resource.icon;
+            const Icon = getResourceIcon(resource.icon);
             return (
               <motion.article
                 key={resource.slug}
@@ -126,13 +134,17 @@ export function ResourcesListSection() {
                   />
                 </p>
 
-                <Link
-                  href={resource.href}
-                  className="mt-6 inline-flex w-fit items-center gap-2 rounded-full border border-border bg-card px-4 py-2 font-body text-sm font-semibold text-ink shadow-soft transition-all duration-300 hover:border-ink/30 hover:bg-ink/5"
+                <Button
+                  variant="unstyled"
+                  size="none"
+                  className="mt-6 w-fit rounded-full border border-border bg-card px-4 py-2 font-body text-sm font-semibold text-ink shadow-soft transition-all duration-300 hover:border-ink/30 hover:bg-ink/5"
+                  asChild
                 >
-                  Download
-                  <Download className="size-4" />
-                </Link>
+                  <Link href={resource.href}>
+                    Download
+                    <Download className="size-4" />
+                  </Link>
+                </Button>
               </motion.article>
             );
           })}

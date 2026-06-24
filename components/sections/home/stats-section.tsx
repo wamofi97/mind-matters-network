@@ -5,11 +5,12 @@ import { animate, motion, useInView } from "framer-motion";
 import { Container } from "@/components/layout/container";
 import { BlobShape } from "@/components/decorations/organic-shapes";
 import { SectionHeader, CoralEmphasis } from "@/components/shared/section-header";
-import { stats } from "@/constants/homepage";
+import { type HomeStat } from "@/lib/content/home";
+import { getFeatureIcon } from "@/lib/content/icons";
 import { fadeUpVariants, staggerContainer } from "@/lib/motion";
 import { cn } from "@/lib/utils";
 
-type Stat = (typeof stats)[number];
+type Stat = HomeStat;
 type Tone = Stat["tone"];
 
 const toneStyles = {
@@ -17,13 +18,6 @@ const toneStyles = {
   butter: "bg-butter/40 border-butter/20",
   mint: "bg-sage-soft/30 border-sage-soft/20",
   lilac: "bg-lilac-soft border-lilac-soft/20",
-};
-
-const iconStyles = {
-  coral: "bg-white/70 text-coral",
-  butter: "bg-white/70 text-ink",
-  mint: "bg-white/70 text-ink",
-  lilac: "bg-white/70 text-ink",
 };
 
 const blobColors: Record<Tone, "coral" | "butter" | "mint" | "lilac"> = {
@@ -43,7 +37,7 @@ const blobPositions = [
 ];
 
 function StatCard({ stat, index }: { stat: Stat; index: number }) {
-  const Icon = stat.icon;
+  const Icon = getFeatureIcon(stat.icon);
   const blobPosition = blobPositions[index % blobPositions.length];
   const ref = useRef<HTMLDivElement>(null);
   const inView = useInView(ref, { once: true, margin: "-60px" });
@@ -95,7 +89,11 @@ function StatCard({ stat, index }: { stat: Stat; index: number }) {
   );
 }
 
-export function StatsSection() {
+type StatsSectionProps = {
+  stats: HomeStat[];
+};
+
+export function StatsSection({ stats }: StatsSectionProps) {
   return (
     <section className="py-20 md:py-28 lg:py-32">
       <Container>

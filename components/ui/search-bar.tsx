@@ -1,6 +1,7 @@
 "use client";
 
 import { Search, X } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
 type SearchBarProps = {
@@ -40,14 +41,16 @@ export function SearchBar({
         className="h-full w-full rounded-full bg-transparent pl-11 pr-10 font-body text-sm text-foreground placeholder:text-muted-foreground focus:outline-none [&::-webkit-search-cancel-button]:appearance-none"
       />
       {value.length > 0 && (
-        <button
+        <Button
+          variant="unstyled"
+          size="none"
           type="button"
           onClick={() => onChange("")}
           aria-label="Clear search"
-          className="absolute right-3 flex size-6 items-center justify-center rounded-full text-muted-foreground transition-colors duration-300 hover:bg-ink/5 hover:text-ink"
+          className="absolute right-3 size-6 rounded-full text-muted-foreground transition-colors duration-300 hover:bg-ink/5 hover:text-ink [&_svg]:size-3.5"
         >
           <X className="size-3.5" />
-        </button>
+        </Button>
       )}
     </div>
   );

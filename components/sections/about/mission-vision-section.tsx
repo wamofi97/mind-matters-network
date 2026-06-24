@@ -4,26 +4,34 @@ import { motion } from "framer-motion";
 import { Container } from "@/components/layout/container";
 import { BlobShape } from "@/components/decorations/organic-shapes";
 import { fadeUpVariants, staggerContainer } from "@/lib/motion";
-import { MessagesSquare, Eye, Icon, Brain } from "lucide-react";
+import { Eye, Brain } from "lucide-react";
 
-const cards = [
-  {
-    icon: Brain,
-    label: "Mission",
-    text: "To make mental wellbeing a daily, normal conversation in every young person's life.",
-    className: "bg-coral text-cream",
-    blob: "butter" as const,
-  },
-  {
+type MissionVisionSectionProps = {
+  missionText: string;
+  visionText: string;
+};
+
+export function MissionVisionSection({
+  missionText,
+  visionText,
+}: MissionVisionSectionProps) {
+  const cards = [
+    {
+      icon: Brain,
+      label: "Mission",
+      text: missionText,
+      className: "bg-coral text-cream",
+      blob: "butter" as const,
+    },
+    {
       icon: Eye,
-    label: "Vision",
-    text: "A world where no young person ever feels like they have to struggle alone.",
-    className: "bg-deep-green text-cream",
-    blob: "mint" as const,
-  },
-];
+      label: "Vision",
+      text: visionText,
+      className: "bg-deep-green text-cream",
+      blob: "mint" as const,
+    },
+  ];
 
-export function MissionVisionSection() {
   return (
     <section className="py-16 md:py-24">
       <Container>

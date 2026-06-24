@@ -8,18 +8,24 @@ import { Container } from "@/components/layout/container";
 import { SectionLabel, CoralEmphasis } from "@/components/shared/section-header";
 import { Button } from "@/components/ui/button";
 import { PillTag } from "@/components/ui/pill-tag";
-import { events } from "@/constants/homepage";
+import { type HomeEventTeaser, type SectionHeading } from "@/lib/content/home";
 import { fadeUpVariants, staggerContainer } from "@/lib/motion";
 
-export function EventsSection() {
+type EventsSectionProps = {
+  events: HomeEventTeaser[];
+  heading: SectionHeading;
+};
+
+export function EventsSection({ events, heading }: EventsSectionProps) {
   return (
     <section className="py-20 md:py-28 lg:py-32">
       <Container>
         <div className="flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
           <div>
-            <SectionLabel>Upcoming events</SectionLabel>
+            <SectionLabel>{heading.label}</SectionLabel>
             <h2 className="mt-4 font-heading text-4xl font-bold leading-[1.08] text-ink sm:text-5xl lg:text-6xl">
-              Show up. <CoralEmphasis>Belong.</CoralEmphasis>
+              {heading.headingLead}{" "}
+              <CoralEmphasis>{heading.headingEmphasis}</CoralEmphasis>
             </h2>
           </div>
           <Button variant="secondary" className="w-fit shrink-0" asChild>
@@ -44,13 +50,15 @@ export function EventsSection() {
               className="group flex flex-col overflow-hidden rounded-card bg-card shadow-soft transition-all duration-300 hover:-translate-y-1 hover:shadow-card"
             >
               <div className="relative aspect-4/3 overflow-hidden">
-                <Image
-                  src={event.image}
-                  alt={event.title}
-                  fill
-                  className="object-cover transition-transform duration-500 group-hover:scale-[1.03]"
-                  sizes="(max-width: 1024px) 50vw, 33vw"
-                />
+                {event.image ? (
+                  <Image
+                    src={event.image}
+                    alt={event.title}
+                    fill
+                    className="object-cover transition-transform duration-500 group-hover:scale-[1.03]"
+                    sizes="(max-width: 1024px) 50vw, 33vw"
+                  />
+                ) : null}
               </div>
               <div className="flex flex-1 flex-col p-6 lg:p-7">
                 <div className="flex items-center justify-between gap-3">

@@ -108,6 +108,54 @@ export const instagramPosts = [
   },
 ];
 
+export const communityTestimonials = [
+  {
+    quote:
+      "I found a circle that listens without judging. For the first time, I felt seen.",
+    name: "Daniel",
+    meta: "Member since 2022",
+    image:
+      "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=600&q=80",
+    imageAlt: "Daniel, community member",
+  },
+  {
+    quote:
+      "The group sessions gave me tools I use every day. I no longer feel like I'm carrying it all alone.",
+    name: "Amara",
+    meta: "Member since 2021",
+    image:
+      "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=600&q=80",
+    imageAlt: "Amara, community member",
+  },
+  {
+    quote:
+      "Being able to talk openly changed everything. This community feels like a second family.",
+    name: "Leo",
+    meta: "Member since 2023",
+    image:
+      "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=600&q=80",
+    imageAlt: "Leo, community member",
+  },
+  {
+    quote:
+      "I came in skeptical and left hopeful. The support here is real and consistent.",
+    name: "Priya",
+    meta: "Member since 2020",
+    image:
+      "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=600&q=80",
+    imageAlt: "Priya, community member",
+  },
+  {
+    quote:
+      "Knowing there's a space where I can just be myself has been life-changing.",
+    name: "Marcus",
+    meta: "Member since 2022",
+    image:
+      "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=600&q=80",
+    imageAlt: "Marcus, community member",
+  },
+];
+
 export const communityAvatars = [
   "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=80&h=80&fit=crop",
   "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=80&h=80&fit=crop",

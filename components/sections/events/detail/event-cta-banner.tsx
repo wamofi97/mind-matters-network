@@ -5,6 +5,7 @@ import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { motion } from "framer-motion";
 import { Container } from "@/components/layout/container";
+import { Button } from "@/components/ui/button";
 import { fadeUpVariants } from "@/lib/motion";
 import type { EventItem } from "@/constants/events";
 
@@ -44,20 +45,28 @@ export function EventCtaBanner({ event }: { event: EventItem }) {
 
             {isPast ? (
               <div className="flex flex-wrap gap-3 lg:justify-end">
-                <Link
-                  href="#recap"
-                  className="inline-flex items-center gap-2 rounded-full bg-cream px-6 py-3 font-body text-sm font-semibold text-deep-green transition-transform duration-300 hover:scale-[1.02]"
+                <Button
+                  variant="unstyled"
+                  size="none"
+                  className="rounded-full bg-cream px-6 py-3 font-body text-sm font-semibold text-deep-green transition-transform duration-300 hover:scale-[1.02]"
+                  asChild
                 >
-                  View Recap
-                  <ArrowRight className="size-4" />
-                </Link>
-                <Link
-                  href="/events"
-                  className="inline-flex items-center gap-2 rounded-full border-2 border-cream/40 px-6 py-3 font-body text-sm font-semibold text-cream transition-colors duration-300 hover:bg-cream/10"
+                  <Link href="#recap">
+                    View Recap
+                    <ArrowRight className="size-4" />
+                  </Link>
+                </Button>
+                <Button
+                  variant="unstyled"
+                  size="none"
+                  className="rounded-full border-2 border-cream/40 px-6 py-3 font-body text-sm font-semibold text-cream transition-colors duration-300 hover:bg-cream/10"
+                  asChild
                 >
-                  See upcoming
-                  <ArrowRight className="size-4" />
-                </Link>
+                  <Link href="/events">
+                    See upcoming
+                    <ArrowRight className="size-4" />
+                  </Link>
+                </Button>
               </div>
             ) : submitted ? (
               <p className="font-body text-base font-medium text-cream lg:text-right">
@@ -92,12 +101,14 @@ export function EventCtaBanner({ event }: { event: EventItem }) {
                   aria-label="Email address"
                   className="w-full rounded-full border border-cream/20 bg-cream/10 px-5 py-3 font-body text-sm text-cream placeholder:text-cream/50 focus:outline-none focus:ring-2 focus:ring-cream/40"
                 />
-                <button
+                <Button
+                  variant="unstyled"
+                  size="none"
                   type="submit"
-                  className="inline-flex shrink-0 items-center justify-center gap-2 rounded-full bg-coral px-6 py-3 font-body text-sm font-semibold text-cream transition-transform duration-300 hover:scale-[1.02]"
+                  className="shrink-0 rounded-full bg-coral px-6 py-3 font-body text-sm font-semibold text-cream transition-transform duration-300 hover:scale-[1.02]"
                 >
                   Reserve my spot
-                </button>
+                </Button>
               </form>
             )}
           </div>

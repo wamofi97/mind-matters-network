@@ -5,11 +5,8 @@ import { motion } from "framer-motion";
 import { Check } from "lucide-react";
 import { Container } from "@/components/layout/container";
 import { Button } from "@/components/ui/button";
-import {
-  involvementPaths,
-  interestOptions,
-  type PathTone,
-} from "@/constants/get-involved";
+import { type PathTone } from "@/constants/get-involved";
+import { type InvolvementPath } from "@/lib/content/get-involved";
 import { fadeUpVariants, staggerContainer } from "@/lib/motion";
 import { cn } from "@/lib/utils";
 
@@ -42,8 +39,19 @@ const inputClasses =
 
 const labelClasses = "font-body text-sm font-semibold text-ink";
 
-export function InvolvementFormSection() {
-  const [selected, setSelected] = useState(involvementPaths[0].id);
+type InvolvementFormSectionProps = {
+  paths: InvolvementPath[];
+};
+
+export function InvolvementFormSection({
+  paths,
+}: InvolvementFormSectionProps) {
+  const [selected, setSelected] = useState(paths[0]?.id ?? "");
+
+  const interestOptions = [
+    ...paths.map((path) => ({ value: path.id, label: path.title })),
+    { value: "other", label: "Something else" },
+  ];
 
   return (
     <section className="pb-20 md:pb-28">
@@ -55,7 +63,7 @@ export function InvolvementFormSection() {
           variants={staggerContainer}
           className="grid gap-5 md:grid-cols-3 lg:gap-6"
         >
-          {involvementPaths.map((path) => {
+          {paths.map((path) => {
             const tone = toneStyles[path.tone];
             const isSelected = selected === path.id;
             return (

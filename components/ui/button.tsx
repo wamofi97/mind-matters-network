@@ -17,12 +17,14 @@ const buttonVariants = cva(
         donate:
           "rounded-full bg-deep-green px-6 py-2.5 text-cream shadow-soft hover:scale-[1.02] hover:bg-deep-green/90",
         link: "text-ink underline-offset-4 hover:underline",
+        unstyled: "",
       },
       size: {
         default: "h-11 px-7",
         sm: "h-9 px-5 text-xs",
         lg: "h-12 px-9 text-base",
         icon: "size-11 rounded-full",
+        none: "",
       },
     },
     defaultVariants: {

@@ -11,9 +11,9 @@ import { Button } from "@/components/ui/button";
 import { SearchBar } from "@/components/ui/search-bar";
 import { Highlight } from "@/components/ui/highlight";
 import {
-  events,
   eventFilters,
   type EventFilter,
+  type EventItem,
   type EventTone,
 } from "@/constants/events";
 import { useDebouncedValue } from "@/hooks/use-debounced-value";
@@ -29,7 +29,11 @@ const monthColor: Record<EventTone, string> = {
 
 const PER_PAGE = 6;
 
-export function EventsListSection() {
+type EventsListSectionProps = {
+  events: EventItem[];
+};
+
+export function EventsListSection({ events }: EventsListSectionProps) {
   const [filter, setFilter] = useState<EventFilter>("all");
   const [query, setQuery] = useState("");
   const [page, setPage] = useState(1);
@@ -77,8 +81,10 @@ export function EventsListSection() {
             {eventFilters.map((tab) => {
               const isActive = filter === tab.value;
               return (
-                <button
+                <Button
                   key={tab.value}
+                  variant="unstyled"
+                  size="none"
                   type="button"
                   onClick={() => handleFilter(tab.value)}
                   aria-pressed={isActive}
@@ -90,7 +96,7 @@ export function EventsListSection() {
                   )}
                 >
                   {tab.label}
-                </button>
+                </Button>
               );
             })}
           </div>
@@ -178,29 +184,33 @@ export function EventsListSection() {
           aria-label="Events pagination"
           className="mt-12 flex items-center justify-center gap-2 lg:mt-16"
         >
-          <button
+          <Button
+            variant="unstyled"
+            size="none"
             type="button"
             onClick={() => setPage((p) => Math.max(1, p - 1))}
             disabled={!hasPagination || currentPage === 1}
             aria-label="Previous page"
-            className="flex size-10 items-center justify-center rounded-full border border-border bg-card text-ink shadow-soft transition-all duration-300 hover:bg-ink/5 disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:bg-card"
+            className="size-10 rounded-full border border-border bg-card text-ink shadow-soft transition-all duration-300 hover:bg-ink/5 disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:bg-card"
           >
             <ArrowLeft className="size-4" />
-          </button>
+          </Button>
 
           {Array.from({ length: Math.max(totalPages, 1) }, (_, i) => i + 1).map(
             (pageNumber) => {
               const isActive = pageNumber === currentPage;
               return (
-                <button
+                <Button
                   key={pageNumber}
+                  variant="unstyled"
+                  size="none"
                   type="button"
                   onClick={() => setPage(pageNumber)}
                   disabled={!hasPagination}
                   aria-label={`Go to page ${pageNumber}`}
                   aria-current={isActive ? "page" : undefined}
                   className={cn(
-                    "flex size-10 items-center justify-center rounded-full font-body text-sm font-semibold transition-all duration-300 disabled:cursor-not-allowed",
+                    "size-10 rounded-full font-body text-sm font-semibold transition-all duration-300 disabled:cursor-not-allowed",
                     isActive
                       ? "bg-deep-green text-cream shadow-soft"
                       : "border border-border bg-card text-ink/70 shadow-soft hover:bg-ink/5",
@@ -208,20 +218,22 @@ export function EventsListSection() {
                   )}
                 >
                   {pageNumber}
-                </button>
+                </Button>
               );
             }
           )}
 
-          <button
+          <Button
+            variant="unstyled"
+            size="none"
             type="button"
             onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
             disabled={!hasPagination || currentPage === totalPages}
             aria-label="Next page"
-            className="flex size-10 items-center justify-center rounded-full border border-border bg-card text-ink shadow-soft transition-all duration-300 hover:bg-ink/5 disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:bg-card"
+            className="size-10 rounded-full border border-border bg-card text-ink shadow-soft transition-all duration-300 hover:bg-ink/5 disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:bg-card"
           >
             <ArrowRight className="size-4" />
-          </button>
+          </Button>
         </nav>
           </>
         ) : (

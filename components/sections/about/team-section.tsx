@@ -4,7 +4,9 @@ import Image from "next/image";
 import { motion } from "framer-motion";
 import { Container } from "@/components/layout/container";
 import { SectionHeader, CoralEmphasis } from "@/components/shared/section-header";
-import { team, type TeamTone } from "@/constants/about";
+import { type TeamTone } from "@/constants/about";
+import { type TeamMemberContent } from "@/lib/content/team";
+import { type SectionHeading } from "@/lib/content/page-content";
 import { fadeUpVariants, staggerContainer } from "@/lib/motion";
 import { cn } from "@/lib/utils";
 
@@ -15,13 +17,19 @@ const toneBg: Record<TeamTone, string> = {
   lilac: "bg-lilac-soft",
 };
 
-export function TeamSection() {
+type TeamSectionProps = {
+  team: TeamMemberContent[];
+  heading: SectionHeading;
+};
+
+export function TeamSection({ team, heading }: TeamSectionProps) {
   return (
     <section className="py-16 md:py-24">
       <Container>
-        <SectionHeader label="The humans">
+        <SectionHeader label={heading.label}>
           <h2 className="font-heading text-4xl font-bold leading-[1.08] text-ink sm:text-5xl lg:text-6xl">
-            Meet the <CoralEmphasis>team.</CoralEmphasis>
+            {heading.headingLead}{" "}
+            <CoralEmphasis>{heading.headingEmphasis}</CoralEmphasis>
           </h2>
         </SectionHeader>
 
@@ -44,13 +52,15 @@ export function TeamSection() {
                   toneBg[member.tone]
                 )}
               >
-                <Image
-                  src={member.image}
-                  alt={member.name}
-                  fill
-                  className="object-cover transition-transform duration-500 group-hover:scale-[1.04]"
-                  sizes="(max-width: 1024px) 50vw, 25vw"
-                />
+                {member.image ? (
+                  <Image
+                    src={member.image}
+                    alt={member.name}
+                    fill
+                    className="object-cover transition-transform duration-500 group-hover:scale-[1.04]"
+                    sizes="(max-width: 1024px) 50vw, 25vw"
+                  />
+                ) : null}
               </div>
               <div className="px-5 py-4">
                 <h3 className="font-heading text-lg font-semibold text-ink">

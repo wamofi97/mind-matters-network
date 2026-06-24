@@ -5,12 +5,17 @@ import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { Menu, X } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-import { mainNavLinks, siteConfig } from "@/constants/navigation";
+import { type NavLink } from "@/lib/content/site";
 import { Button } from "@/components/ui/button";
 import { Logo } from "@/components/shared/logo";
 import { Container } from "./container";
 
-export function Navbar() {
+type NavbarProps = {
+  navLinks: NavLink[];
+  joinHref: string;
+};
+
+export function Navbar({ navLinks, joinHref }: NavbarProps) {
   const [open, setOpen] = useState(false);
   const [hidden, setHidden] = useState(false);
   const [scrolled, setScrolled] = useState(false);
@@ -62,7 +67,7 @@ export function Navbar() {
           <Logo className="shrink-0 justify-self-start" />
 
           <ul className="hidden items-center justify-center gap-0.5 xl:flex xl:col-start-2">
-            {mainNavLinks.map((link) => {
+            {navLinks.map((link) => {
               const active = isActive(link.href);
               return (
                 <li key={link.href}>
@@ -84,19 +89,21 @@ export function Navbar() {
 
           <div className="hidden justify-self-end xl:col-start-3 xl:block">
             <Button variant="donate" size="sm" asChild>
-              <Link href={siteConfig.joinHref}>Join the Movement</Link>
+              <Link href={joinHref}>Join the Movement</Link>
             </Button>
           </div>
 
-          <button
+          <Button
+            variant="unstyled"
+            size="none"
             type="button"
-            className="inline-flex size-10 items-center justify-center justify-self-end rounded-full text-ink transition-colors hover:bg-sage-soft/50 xl:col-start-3 xl:hidden"
+            className="size-10 justify-self-end rounded-full text-ink transition-colors hover:bg-sage-soft/50 xl:col-start-3 xl:hidden [&_svg]:size-5"
             onClick={() => setOpen(!open)}
             aria-expanded={open}
             aria-label={open ? "Close menu" : "Open menu"}
           >
             {open ? <X className="size-5" /> : <Menu className="size-5" />}
-          </button>
+          </Button>
         </nav>
 
         <AnimatePresence>
@@ -109,7 +116,7 @@ export function Navbar() {
               className="mt-3 overflow-hidden rounded-card border border-border/60 bg-cream/95 p-4 shadow-card xl:hidden"
             >
               <ul className="flex flex-col gap-1">
-                {mainNavLinks.map((link) => {
+                {navLinks.map((link) => {
                   const active = isActive(link.href);
                   return (
                     <li key={link.href}>
@@ -129,7 +136,7 @@ export function Navbar() {
                 <li className="pt-2">
                   <Button variant="primary" className="w-full" asChild>
                     <Link
-                      href={siteConfig.joinHref}
+                      href={joinHref}
                       onClick={() => setOpen(false)}
                     >
                       Join the Movement

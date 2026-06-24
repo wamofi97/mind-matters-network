@@ -7,19 +7,26 @@ import { ChevronDown } from "lucide-react";
 import { Container } from "@/components/layout/container";
 import { SectionHeader, CoralEmphasis } from "@/components/shared/section-header";
 import { Button } from "@/components/ui/button";
-import { faqs } from "@/constants/about";
+import { type FaqContent } from "@/lib/content/faqs";
+import { type SectionHeading } from "@/lib/content/page-content";
 import { fadeUpVariants, staggerContainer } from "@/lib/motion";
 import { cn } from "@/lib/utils";
 
-export function FaqSection() {
+type FaqSectionProps = {
+  faqs: FaqContent[];
+  heading: SectionHeading;
+};
+
+export function FaqSection({ faqs, heading }: FaqSectionProps) {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
 
   return (
     <section className="py-16 md:py-24">
       <Container>
-        <SectionHeader label="FAQ" align="center">
+        <SectionHeader label={heading.label} align="center">
           <h2 className="text-balance font-heading text-4xl font-bold leading-[1.08] text-ink sm:text-5xl lg:text-6xl">
-            Things <CoralEmphasis>people ask.</CoralEmphasis>
+            {heading.headingLead}{" "}
+            <CoralEmphasis>{heading.headingEmphasis}</CoralEmphasis>
           </h2>
         </SectionHeader>
 
@@ -38,7 +45,9 @@ export function FaqSection() {
                 variants={fadeUpVariants}
                 className="overflow-hidden rounded-card border border-border/60 bg-card shadow-soft"
               >
-                <button
+                <Button
+                  variant="unstyled"
+                  size="none"
                   type="button"
                   onClick={() => setOpenIndex(isOpen ? null : index)}
                   aria-expanded={isOpen}
@@ -56,7 +65,7 @@ export function FaqSection() {
                       strokeWidth={2.5}
                     />
                   </span>
-                </button>
+                </Button>
 
                 <AnimatePresence initial={false}>
                   {isOpen && (

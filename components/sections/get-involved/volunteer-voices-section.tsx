@@ -4,7 +4,9 @@ import Image from "next/image";
 import { motion } from "framer-motion";
 import { Container } from "@/components/layout/container";
 import { SectionHeader, CoralEmphasis } from "@/components/shared/section-header";
-import { volunteerVoices, type VoiceTone } from "@/constants/get-involved";
+import { type VoiceTone } from "@/constants/get-involved";
+import { type VolunteerVoice } from "@/lib/content/get-involved";
+import { type SectionHeading } from "@/lib/content/page-content";
 import { fadeUpVariants, staggerContainer } from "@/lib/motion";
 import { cn } from "@/lib/utils";
 
@@ -14,13 +16,22 @@ const toneBg: Record<VoiceTone, string> = {
   coral: "bg-coral/20",
 };
 
-export function VolunteerVoicesSection() {
+type VolunteerVoicesSectionProps = {
+  voices: VolunteerVoice[];
+  heading: SectionHeading;
+};
+
+export function VolunteerVoicesSection({
+  voices,
+  heading,
+}: VolunteerVoicesSectionProps) {
   return (
     <section className="pb-20 md:pb-28 lg:pb-32">
       <Container>
-        <SectionHeader label="From our volunteers" align="center">
+        <SectionHeader label={heading.label} align="center">
           <h2 className="text-balance font-heading text-4xl font-bold leading-[1.08] text-ink sm:text-5xl lg:text-6xl">
-            Why people <CoralEmphasis>stick around.</CoralEmphasis>
+            {heading.headingLead}{" "}
+            <CoralEmphasis>{heading.headingEmphasis}</CoralEmphasis>
           </h2>
         </SectionHeader>
 
@@ -31,7 +42,7 @@ export function VolunteerVoicesSection() {
           viewport={{ once: true, margin: "-60px" }}
           variants={staggerContainer}
         >
-          {volunteerVoices.map((voice) => (
+          {voices.map((voice) => (
             <motion.figure
               key={voice.name}
               variants={fadeUpVariants}
@@ -51,13 +62,15 @@ export function VolunteerVoicesSection() {
               </blockquote>
               <figcaption className="mt-6 flex items-center gap-3">
                 <span className="relative size-11 overflow-hidden rounded-full bg-card">
-                  <Image
-                    src={voice.image}
-                    alt={voice.name}
-                    fill
-                    className="object-cover"
-                    sizes="44px"
-                  />
+                  {voice.image ? (
+                    <Image
+                      src={voice.image}
+                      alt={voice.name}
+                      fill
+                      className="object-cover"
+                      sizes="44px"
+                    />
+                  ) : null}
                 </span>
                 <span>
                   <span className="block font-body text-sm font-semibold text-ink">

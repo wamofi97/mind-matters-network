@@ -4,7 +4,8 @@ import Image from "next/image";
 import { motion } from "framer-motion";
 import { Container } from "@/components/layout/container";
 import { SectionLabel, CoralEmphasis } from "@/components/shared/section-header";
-import { storyStats } from "@/constants/about";
+import { type StoryStat } from "@/lib/content/about-settings";
+import { type SectionHeading } from "@/lib/content/page-content";
 import { fadeUpVariants, staggerContainer } from "@/lib/motion";
 import { cn } from "@/lib/utils";
 
@@ -13,7 +14,17 @@ const statTone = {
   lilac: "text-lilac",
 };
 
-export function WhySection() {
+type WhySectionProps = {
+  storyStats: StoryStat[];
+  heading: SectionHeading;
+  paragraphs: string[];
+};
+
+export function WhySection({
+  storyStats,
+  heading,
+  paragraphs,
+}: WhySectionProps) {
   return (
     <section className="py-16 md:py-24">
       <Container>
@@ -51,29 +62,24 @@ export function WhySection() {
             variants={staggerContainer}
           >
             <motion.div variants={fadeUpVariants}>
-              <SectionLabel>Why we exist</SectionLabel>
+              <SectionLabel>{heading.label}</SectionLabel>
             </motion.div>
 
             <motion.h2
               variants={fadeUpVariants}
               className="mt-4 font-heading text-4xl font-bold leading-[1.08] text-ink sm:text-5xl"
             >
-              A generation rewriting the rules of{" "}
-              <CoralEmphasis>care.</CoralEmphasis>
+              {heading.headingLead}{" "}
+              <CoralEmphasis>{heading.headingEmphasis}</CoralEmphasis>
             </motion.h2>
 
             <motion.div
               variants={fadeUpVariants}
               className="mt-6 space-y-4 font-body text-base leading-relaxed text-muted-foreground"
             >
-            <p>
-            Mind Matters Network is a youth platform that brings together mental health initiatives so that it reaches both schools and university students at ground level. Each participating educational institute will be part of the Mind Matters Network which is a Peer Mental Health Group by integrating the Mind Matters programme in their clubs. 
-            The participating institute will be supported by the core committee of the Mind Matters Network in terms of proposed activities, resources, networking and training. 
-            </p>
-            <p>
-            In return, the participating institute may conduct a string of activities, suggestions will be provided in the Mind Matters booklet, to highlight and build mental health resilience and skills among their students. 
-            </p>
-            <p>Students will also have the opportunity to join events at national level where they have the opportunity to speak up, network and champion mental health advocacy in our local community. </p>
+              {paragraphs.map((paragraph, i) => (
+                <p key={i}>{paragraph}</p>
+              ))}
             </motion.div>
 
             <motion.dl

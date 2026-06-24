@@ -5,12 +5,15 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Container } from "@/components/layout/container";
-import { communityAvatars } from "@/constants/homepage";
-import { siteConfig } from "@/constants/navigation";
+import { type HeroContent } from "@/lib/content/home";
 import { fadeUpVariants } from "@/lib/motion";
 import { cn } from "@/lib/utils";
 
-export function HeroSection() {
+type HeroSectionProps = {
+  hero: HeroContent;
+};
+
+export function HeroSection({ hero }: HeroSectionProps) {
   return (
     <section className="relative flex items-center justify-center lg:h-screen overflow-hidden pb-16 pt-24 md:pb-24 md:pt-28 lg:pb-32 lg:pt-32">
       <div
@@ -31,33 +34,34 @@ export function HeroSection() {
             className="relative z-10 flex flex-col items-center justify-center lg:block "
           >
             <span className="inline-block rounded-full border border-border/80 bg-white/70 px-4 py-1.5 font-body text-xs font-medium text-ink shadow-soft sm:text-sm">
-              A youth-led mental health movement
+              {hero.eyebrow}
             </span>
 
             <h1 className="mt-6 font-heading text-center lg:text-left text-[2.75rem] font-bold leading-[1.02] tracking-tight text-ink sm:text-5xl lg:text-[3.25rem] xl:text-6xl ">
-              Uniting youth for{" "}
-              <em className="text-coral not-italic text-nowrap">mental health</em>
+              {hero.titlePrefix}{" "}
+              <em className="text-coral not-italic text-nowrap">
+                {hero.titleHighlight}
+              </em>
               <br />
-              <span className="italic">awareness.</span>
+              <span className="italic">{hero.titleSuffix}</span>
             </h1>
 
             <p className="mt-6 max-w-md text-center lg:text-left text-base leading-relaxed text-muted-foreground sm:text-lg">
-              We are building a kinder generation through real conversations,
-              free resources, and a community that shows up for each other.
+              {hero.description}
             </p>
 
             <div className="mt-8 flex flex-wrap items-center gap-4">
               <Button variant="primary" size="lg" asChild>
-                <Link href={siteConfig.joinHref}>Get Involved</Link>
+                <Link href={hero.primaryCtaHref}>{hero.primaryCtaLabel}</Link>
               </Button>
               <Button variant="secondary" size="lg" asChild>
-                <Link href="/about">Learn More</Link>
+                <Link href={hero.secondaryCtaHref}>{hero.secondaryCtaLabel}</Link>
               </Button>
             </div>
 
             <div className="mt-10 flex items-center gap-4">
               <div className="flex -space-x-3">
-                {communityAvatars.map((src, i) => (
+                {hero.communityAvatars.map((src, i) => (
                   <div
                     key={src}
                     className={cn(
@@ -76,8 +80,10 @@ export function HeroSection() {
                 ))}
               </div>
               <p className="font-body text-sm text-muted-foreground sm:text-base">
-                <span className="font-semibold text-ink">2445+</span> young people
-                already in the movement
+                <span className="font-semibold text-ink">
+                  {hero.socialProofCount}
+                </span>{" "}
+                {hero.socialProofText}
               </p>
             </div>
           </motion.div>
@@ -99,14 +105,16 @@ export function HeroSection() {
 
             <div className="relative mx-auto aspect-square w-full max-w-[440px] lg:max-w-[480px]">
               <div className="absolute inset-0 overflow-hidden rounded-full shadow-card">
-                <Image
-                  src="https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=800&q=80"
-                  alt="Diverse group of young people laughing together"
-                  fill
-                  className="object-cover"
-                  priority
-                  sizes="(max-width: 1024px) 90vw, 480px"
-                />
+                {hero.image ? (
+                  <Image
+                    src={hero.image}
+                    alt="Diverse group of young people laughing together"
+                    fill
+                    className="object-cover"
+                    priority
+                    sizes="(max-width: 1024px) 90vw, 480px"
+                  />
+                ) : null}
               </div>
 
               <motion.div
@@ -115,7 +123,7 @@ export function HeroSection() {
                 className="absolute -left-2 top-8 z-10 sm:left-0 sm:top-12 -rotate-4"
               >
                 <span className="inline-block rounded-2xl rounded-bl-sm bg-butter px-4 py-2.5 font-body text-sm font-semibold text-ink shadow-soft">
-                  you matter 🍁
+                  {hero.badgePrimary}
                 </span>
               </motion.div>
 
@@ -125,7 +133,7 @@ export function HeroSection() {
                 className="absolute -bottom-2 right-0 z-10 sm:right-4 rotate-4"
               >
                 <span className="inline-block rounded-2xl rounded-br-sm bg-sage-soft px-4 py-2.5 font-body text-sm font-semibold text-ink shadow-soft">
-                  it&apos;s okay to not be okay ☘️
+                  {hero.badgeSecondary}
                 </span>
               </motion.div>
             </div>

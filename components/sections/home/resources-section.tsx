@@ -1,36 +1,41 @@
 "use client";
 
 import Link from "next/link";
-import { ArrowRight, BookOpen, Heart, MessageCircle } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { motion } from "framer-motion";
 import { Container } from "@/components/layout/container";
 import { SectionLabel, CoralEmphasis } from "@/components/shared/section-header";
 import { Button } from "@/components/ui/button";
-import { resources } from "@/constants/homepage";
+import {
+  type HomeResourceTeaser,
+  type SectionHeading,
+} from "@/lib/content/home";
+import { getResourceIcon } from "@/lib/content/icons";
 import { fadeUpVariants, staggerContainer } from "@/lib/motion";
 import { cn } from "@/lib/utils";
 
-const iconMap = {
-  heart: Heart,
-  message: MessageCircle,
-  book: BookOpen,
-} as const;
-
 const iconColors = {
-  heart: "bg-coral/20 text-coral",
-  message: "bg-lilac-soft text-lilac",
-  book: "bg-sage-soft text-deep-green",
+  butter: "bg-butter text-amber-700",
+  coral: "bg-coral/20 text-coral",
+  mint: "bg-sage-soft text-deep-green",
+  lilac: "bg-lilac-soft text-lilac",
 };
 
-export function ResourcesSection() {
+type ResourcesSectionProps = {
+  resources: HomeResourceTeaser[];
+  heading: SectionHeading;
+};
+
+export function ResourcesSection({ resources, heading }: ResourcesSectionProps) {
   return (
     <section className="py-20 md:py-28 lg:py-32">
       <Container>
         <div className="flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
           <div>
-            <SectionLabel>Free resources</SectionLabel>
+            <SectionLabel>{heading.label}</SectionLabel>
             <h2 className="mt-4 font-heading text-4xl font-bold leading-[1.08] text-ink sm:text-5xl lg:text-6xl">
-              Tools for the <CoralEmphasis>hard days.</CoralEmphasis>
+              {heading.headingLead}{" "}
+              <CoralEmphasis>{heading.headingEmphasis}</CoralEmphasis>
             </h2>
           </div>
           <Button variant="secondary" className="w-fit shrink-0" asChild>
@@ -49,7 +54,7 @@ export function ResourcesSection() {
           variants={staggerContainer}
         >
           {resources.map((resource) => {
-            const Icon = iconMap[resource.icon as keyof typeof iconMap];
+            const Icon = getResourceIcon(resource.icon);
             return (
               <motion.article
                 key={resource.title}
@@ -59,7 +64,7 @@ export function ResourcesSection() {
                 <span
                   className={cn(
                     "flex size-12 items-center justify-center rounded-full",
-                    iconColors[resource.icon as keyof typeof iconColors]
+                    iconColors[resource.tone]
                   )}
                 >
                   <Icon className="size-5" strokeWidth={2} />

@@ -7,6 +7,7 @@ import { Container } from "@/components/layout/container";
 import { fadeUpVariants, staggerContainer } from "@/lib/motion";
 import { cn } from "@/lib/utils";
 import { CoralEmphasis } from "@/components/shared/section-header";
+import { type SectionHeading } from "@/lib/content/page-content";
 import type { InstagramPost } from "@/lib/instagram";
 
 const staggerOffsets = [
@@ -22,12 +23,14 @@ type InstagramGalleryProps = {
   posts: InstagramPost[];
   handle: string;
   profileUrl: string;
+  heading: SectionHeading;
 };
 
 export function InstagramGallery({
   posts,
   handle,
   profileUrl,
+  heading,
 }: InstagramGalleryProps) {
   return (
     <section className="py-20 md:py-28 lg:py-32">
@@ -48,8 +51,8 @@ export function InstagramGallery({
             {handle}
           </Link>
           <h2 className="mt-6 font-heading text-4xl font-bold text-ink sm:text-5xl lg:text-6xl">
-            Find us on the {" "}
-            <CoralEmphasis>gram</CoralEmphasis> 🌸
+            {heading.headingLead}{" "}
+            <CoralEmphasis>{heading.headingEmphasis}</CoralEmphasis> 🌸
           </h2>
         </motion.div>
 

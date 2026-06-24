@@ -3,7 +3,9 @@
 import { motion } from "framer-motion";
 import { Container } from "@/components/layout/container";
 import { SectionHeader, CoralEmphasis } from "@/components/shared/section-header";
-import { values } from "@/constants/about";
+import { type AboutValue } from "@/lib/content/about-settings";
+import { type SectionHeading } from "@/lib/content/page-content";
+import { getFeatureIcon } from "@/lib/content/icons";
 import { fadeUpVariants, staggerContainer } from "@/lib/motion";
 import { cn } from "@/lib/utils";
 
@@ -13,13 +15,19 @@ const iconColors = {
   lilac: "bg-lilac-soft text-lilac",
 };
 
-export function ValuesSection() {
+type ValuesSectionProps = {
+  values: AboutValue[];
+  heading: SectionHeading;
+};
+
+export function ValuesSection({ values, heading }: ValuesSectionProps) {
   return (
     <section className="py-16 md:py-24">
       <Container>
-        <SectionHeader label="Our values" align="center">
+        <SectionHeader label={heading.label} align="center">
           <h2 className="text-balance font-heading text-4xl font-bold leading-[1.08] text-ink sm:text-5xl lg:text-6xl">
-            What we <CoralEmphasis>stand for.</CoralEmphasis>
+            {heading.headingLead}{" "}
+            <CoralEmphasis>{heading.headingEmphasis}</CoralEmphasis>
           </h2>
         </SectionHeader>
 
@@ -31,7 +39,7 @@ export function ValuesSection() {
           variants={staggerContainer}
         >
           {values.map((value) => {
-            const Icon = value.icon;
+            const Icon = getFeatureIcon(value.icon);
             return (
               <motion.article
                 key={value.title}

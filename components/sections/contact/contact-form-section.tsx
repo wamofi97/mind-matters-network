@@ -4,7 +4,8 @@ import { motion } from "framer-motion";
 import Link from "next/link";
 import { Container } from "@/components/layout/container";
 import { Button } from "@/components/ui/button";
-import { contactDetails, contactSocials } from "@/constants/contact";
+import { type ContactSettings } from "@/lib/content/contact";
+import { getSocialIcon } from "@/lib/content/icons";
 import { fadeUpVariants, staggerContainer } from "@/lib/motion";
 
 const inputClasses =
@@ -13,7 +14,11 @@ const inputClasses =
 const labelClasses =
   "font-body text-sm font-semibold text-ink";
 
-export function ContactFormSection() {
+type ContactFormSectionProps = {
+  contact: ContactSettings;
+};
+
+export function ContactFormSection({ contact }: ContactFormSectionProps) {
   return (
     <section className="pb-20 md:pb-28">
       <Container>
@@ -112,13 +117,13 @@ export function ContactFormSection() {
                 Drop in
               </p>
               <a
-                href={`mailto:${contactDetails.email}`}
+                href={`mailto:${contact.email}`}
                 className="mt-3 block font-heading text-xl font-bold text-cream transition-opacity hover:opacity-90 sm:text-2xl"
               >
-                {contactDetails.email}
+                {contact.email}
               </a>
               <p className="mt-2 font-body text-sm text-cream/85">
-                {contactDetails.phone}
+                {contact.phone}
               </p>
             </motion.div>
 
@@ -130,14 +135,14 @@ export function ContactFormSection() {
                 Visit us
               </p>
               <address className="mt-3 not-italic font-body text-base leading-relaxed text-ink">
-                {contactDetails.addressLines.map((line) => (
+                {contact.addressLines.map((line) => (
                   <span key={line} className="block">
                     {line}
                   </span>
                 ))}
               </address>
               <p className="mt-2 font-body text-sm text-muted-foreground">
-                {contactDetails.hours}
+                {contact.hours}
               </p>
             </motion.div>
 
@@ -149,8 +154,8 @@ export function ContactFormSection() {
                 Find us online
               </p>
               <div className="mt-4 flex flex-wrap gap-3">
-                {contactSocials.map((social) => {
-                  const Icon = social.icon;
+                {contact.socials.map((social) => {
+                  const Icon = getSocialIcon(social.icon);
                   return (
                     <Link
                       key={social.label}

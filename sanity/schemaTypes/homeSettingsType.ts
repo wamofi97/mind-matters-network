@@ -1,0 +1,230 @@
+import { HomeIcon } from "@sanity/icons";
+import { defineArrayMember, defineField, defineType } from "sanity";
+
+const statToneOptions = [
+  { title: "Coral (pink)", value: "coral" },
+  { title: "Butter (yellow)", value: "butter" },
+  { title: "Mint (green)", value: "mint" },
+  { title: "Lilac (purple)", value: "lilac" },
+];
+
+// Keys map to Lucide icons in `lib/content/icons.ts` (featureIconMap).
+const featureIconOptions = [
+  { title: "Users", value: "users" },
+  { title: "Book", value: "book" },
+  { title: "Building", value: "building" },
+  { title: "Sparkles", value: "sparkles" },
+  { title: "Heart handshake", value: "heart-handshake" },
+  { title: "Message", value: "message" },
+];
+
+export const homeSettingsType = defineType({
+  name: "homeSettings",
+  title: "Home page",
+  type: "document",
+  icon: HomeIcon,
+  groups: [
+    { name: "hero", title: "Hero", default: true },
+    { name: "stats", title: "Stats" },
+    { name: "sections", title: "Section headings" },
+  ],
+  fields: [
+    defineField({
+      name: "heroEyebrow",
+      title: "Eyebrow",
+      type: "string",
+      group: "hero",
+      description: 'Small pill above the title, e.g. "A youth-led mental health movement"',
+    }),
+    defineField({
+      name: "heroTitlePrefix",
+      title: "Title — start",
+      type: "string",
+      group: "hero",
+      description: 'e.g. "Uniting youth for"',
+    }),
+    defineField({
+      name: "heroTitleHighlight",
+      title: "Title — highlighted word(s)",
+      type: "string",
+      group: "hero",
+      description: 'Shown in coral, e.g. "mental health"',
+    }),
+    defineField({
+      name: "heroTitleSuffix",
+      title: "Title — end",
+      type: "string",
+      group: "hero",
+      description: 'Shown in italic, e.g. "awareness."',
+    }),
+    defineField({
+      name: "heroDescription",
+      title: "Description",
+      type: "text",
+      rows: 3,
+      group: "hero",
+    }),
+    defineField({
+      name: "heroImage",
+      title: "Hero image",
+      type: "image",
+      options: { hotspot: true },
+      group: "hero",
+    }),
+    defineField({
+      name: "heroPrimaryCtaLabel",
+      title: "Primary button label",
+      type: "string",
+      group: "hero",
+    }),
+    defineField({
+      name: "heroPrimaryCtaHref",
+      title: "Primary button link",
+      type: "string",
+      group: "hero",
+    }),
+    defineField({
+      name: "heroSecondaryCtaLabel",
+      title: "Secondary button label",
+      type: "string",
+      group: "hero",
+    }),
+    defineField({
+      name: "heroSecondaryCtaHref",
+      title: "Secondary button link",
+      type: "string",
+      group: "hero",
+    }),
+    defineField({
+      name: "heroBadgePrimary",
+      title: "Floating badge 1",
+      type: "string",
+      group: "hero",
+      description: 'e.g. "you matter 🍁"',
+    }),
+    defineField({
+      name: "heroBadgeSecondary",
+      title: "Floating badge 2",
+      type: "string",
+      group: "hero",
+      description: 'e.g. "it\'s okay to not be okay ☘️"',
+    }),
+    defineField({
+      name: "heroSocialProofCount",
+      title: "Social proof — count",
+      type: "string",
+      group: "hero",
+      description: 'e.g. "2445+"',
+    }),
+    defineField({
+      name: "heroSocialProofText",
+      title: "Social proof — text",
+      type: "string",
+      group: "hero",
+      description: 'e.g. "young people already in the movement"',
+    }),
+    defineField({
+      name: "communityAvatars",
+      title: "Community avatars",
+      type: "array",
+      group: "hero",
+      of: [defineArrayMember({ type: "image", options: { hotspot: true } })],
+    }),
+    defineField({
+      name: "eventsLabel",
+      title: "Events — pill label",
+      type: "string",
+      group: "sections",
+      description: 'e.g. "Upcoming events"',
+    }),
+    defineField({
+      name: "eventsHeadingLead",
+      title: "Events — heading (start)",
+      type: "string",
+      group: "sections",
+      description: 'e.g. "Show up."',
+    }),
+    defineField({
+      name: "eventsHeadingEmphasis",
+      title: "Events — heading (coral word)",
+      type: "string",
+      group: "sections",
+      description: 'Shown in coral, e.g. "Belong."',
+    }),
+    defineField({
+      name: "resourcesLabel",
+      title: "Resources — pill label",
+      type: "string",
+      group: "sections",
+      description: 'e.g. "Free resources"',
+    }),
+    defineField({
+      name: "resourcesHeadingLead",
+      title: "Resources — heading (start)",
+      type: "string",
+      group: "sections",
+      description: 'e.g. "Tools for the"',
+    }),
+    defineField({
+      name: "resourcesHeadingEmphasis",
+      title: "Resources — heading (coral word)",
+      type: "string",
+      group: "sections",
+      description: 'Shown in coral, e.g. "hard days."',
+    }),
+    defineField({
+      name: "testimonialHeading",
+      title: "Testimonials — heading",
+      type: "sectionHeading",
+      group: "sections",
+    }),
+    defineField({
+      name: "partnersHeading",
+      title: "Partners — heading",
+      type: "sectionHeading",
+      group: "sections",
+    }),
+    defineField({
+      name: "instagramHeading",
+      title: "Instagram — heading",
+      type: "sectionHeading",
+      group: "sections",
+      description: 'Pill label is unused here (the @handle shows instead).',
+    }),
+    defineField({
+      name: "stats",
+      title: "Stats",
+      type: "array",
+      group: "stats",
+      of: [
+        defineArrayMember({
+          type: "object",
+          name: "stat",
+          fields: [
+            defineField({
+              name: "value",
+              title: "Value",
+              type: "string",
+              description: 'Number or text, e.g. "2445"',
+            }),
+            defineField({ name: "label", title: "Label", type: "string" }),
+            defineField({
+              name: "icon",
+              title: "Icon",
+              type: "string",
+              options: { list: featureIconOptions },
+            }),
+            defineField({
+              name: "tone",
+              title: "Colour tone",
+              type: "string",
+              options: { list: statToneOptions },
+            }),
+          ],
+          preview: { select: { title: "value", subtitle: "label" } },
+        }),
+      ],
+    }),
+  ],
+  preview: { prepare: () => ({ title: "Home page" }) },
+});

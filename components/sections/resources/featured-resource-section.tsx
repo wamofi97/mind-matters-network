@@ -5,11 +5,19 @@ import { Download } from "lucide-react";
 import { motion } from "framer-motion";
 import { Container } from "@/components/layout/container";
 import { Button } from "@/components/ui/button";
-import { featuredResource } from "@/constants/resources";
+import { type FeaturedResource } from "@/lib/content/resources-settings";
+import { getResourceIcon } from "@/lib/content/icons";
 import { fadeUpVariants } from "@/lib/motion";
 
-export function FeaturedResourceSection() {
-  const { tag, title, description, href, icon: Icon } = featuredResource;
+type FeaturedResourceSectionProps = {
+  featured: FeaturedResource;
+};
+
+export function FeaturedResourceSection({
+  featured,
+}: FeaturedResourceSectionProps) {
+  const { tag, title, description, href } = featured;
+  const Icon = getResourceIcon(featured.icon);
 
   return (
     <section className="pb-12 md:pb-16">

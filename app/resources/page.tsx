@@ -29,7 +29,7 @@ export default async function ResourcesPage() {
         aria-hidden
       />
       <ResourcesHeroSection hero={settings.hero} />
-      <FeaturedResourceSection />
+      <FeaturedResourceSection featured={settings.featured} />
       <ResourcesListSection resources={resources} />
     </PageShell>
   );

@@ -532,6 +532,14 @@ async function migrate() {
       description:
         "Designed by youth, reviewed by professionals — every resource is free to download, share and remix.",
     },
+    featured: {
+      tag: "Featured · 2024",
+      title: "The Big Little Guide to Feeling Things.",
+      description:
+        "A 60-page illustrated companion for naming, sitting with, and moving through emotions — written by and for young people.",
+      href: "/resources/big-little-guide",
+      icon: "heart",
+    },
   });
   console.log("  ✓ Resources page");
 

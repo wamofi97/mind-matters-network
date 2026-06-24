@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { type FormEvent, useState } from "react";
 import { motion } from "framer-motion";
 import { Check } from "lucide-react";
 import { Container } from "@/components/layout/container";
@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { type PathTone } from "@/constants/get-involved";
 import { type InvolvementPath } from "@/lib/content/get-involved";
 import { fadeUpVariants, staggerContainer } from "@/lib/motion";
+import { submitForm } from "@/lib/submit-form";
 import { cn } from "@/lib/utils";
 
 const toneStyles: Record<
@@ -47,11 +48,47 @@ export function InvolvementFormSection({
   paths,
 }: InvolvementFormSectionProps) {
   const [selected, setSelected] = useState(paths[0]?.id ?? "");
+  const [submitting, setSubmitting] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const interestOptions = [
     ...paths.map((path) => ({ value: path.id, label: path.title })),
     { value: "other", label: "Something else" },
   ];
+
+  async function handleSubmit(e: FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    if (submitting) return;
+
+    const form = e.currentTarget;
+    const data = new FormData(form);
+    const interestValue = String(data.get("interest") ?? selected);
+    const interestLabel =
+      interestOptions.find((option) => option.value === interestValue)?.label ??
+      interestValue;
+
+    setSubmitting(true);
+    setError(null);
+
+    const result = await submitForm({
+      kind: "involvement",
+      name: String(data.get("fullName") ?? ""),
+      email: String(data.get("email") ?? ""),
+      phone: String(data.get("phone") ?? ""),
+      interest: interestLabel,
+      message: String(data.get("why") ?? ""),
+      company: String(data.get("company") ?? ""),
+    });
+
+    setSubmitting(false);
+
+    if (result.ok) {
+      setSubmitted(true);
+    } else {
+      setError(result.error);
+    }
+  }
 
   return (
     <section className="pb-20 md:pb-28">
@@ -138,7 +175,21 @@ export function InvolvementFormSection({
             We&apos;ll be in touch within 3 days.
           </p>
 
-          <form className="mt-7 space-y-5" action="#" aria-label="Get involved form">
+          {submitted ? (
+            <div className="mt-7 rounded-input border border-sage/40 bg-sage-soft/50 p-6">
+              <p className="font-heading text-lg font-bold text-deep-green">
+                Thanks — your application is in.
+              </p>
+              <p className="mt-1 font-body text-sm text-ink/80">
+                We&apos;ll be in touch within 3 days.
+              </p>
+            </div>
+          ) : (
+          <form
+            className="mt-7 space-y-5"
+            onSubmit={handleSubmit}
+            aria-label="Get involved form"
+          >
             <div className="grid gap-5 sm:grid-cols-2">
               <div className="space-y-2">
                 <label htmlFor="fullName" className={labelClasses}>
@@ -212,10 +263,31 @@ export function InvolvementFormSection({
               />
             </div>
 
-            <Button type="submit" variant="donate" className="mt-2">
-              Send my application &rarr;
+            <input
+              type="text"
+              name="company"
+              tabIndex={-1}
+              autoComplete="off"
+              aria-hidden
+              className="hidden"
+            />
+
+            {error && (
+              <p className="font-body text-sm text-coral" role="alert">
+                {error}
+              </p>
+            )}
+
+            <Button
+              type="submit"
+              variant="donate"
+              className="mt-2"
+              disabled={submitting}
+            >
+              {submitting ? "Sending…" : "Send my application →"}
             </Button>
           </form>
+          )}
         </motion.div>
       </Container>
     </section>

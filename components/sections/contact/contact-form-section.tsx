@@ -1,5 +1,6 @@
 "use client";
 
+import { type FormEvent, useState } from "react";
 import { motion } from "framer-motion";
 import Link from "next/link";
 import { Container } from "@/components/layout/container";
@@ -7,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { type ContactSettings } from "@/lib/content/contact";
 import { getSocialIcon } from "@/lib/content/icons";
 import { fadeUpVariants, staggerContainer } from "@/lib/motion";
+import { submitForm } from "@/lib/submit-form";
 
 const inputClasses =
   "h-12 w-full rounded-input border border-border bg-cream/40 px-4 font-body text-sm text-ink placeholder:text-muted-foreground/60 transition-colors focus:border-sage focus:bg-card focus:outline-none focus:ring-2 focus:ring-sage/30";
@@ -19,6 +21,38 @@ type ContactFormSectionProps = {
 };
 
 export function ContactFormSection({ contact }: ContactFormSectionProps) {
+  const [submitting, setSubmitting] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  async function handleSubmit(e: FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    if (submitting) return;
+
+    const form = e.currentTarget;
+    const data = new FormData(form);
+
+    setSubmitting(true);
+    setError(null);
+
+    const result = await submitForm({
+      kind: "contact",
+      name: String(data.get("name") ?? ""),
+      email: String(data.get("email") ?? ""),
+      subject: String(data.get("subject") ?? ""),
+      message: String(data.get("message") ?? ""),
+      company: String(data.get("company") ?? ""),
+    });
+
+    setSubmitting(false);
+
+    if (result.ok) {
+      setSubmitted(true);
+    } else {
+      setError(result.error);
+    }
+  }
+
   return (
     <section className="pb-20 md:pb-28">
       <Container>
@@ -34,9 +68,19 @@ export function ContactFormSection({ contact }: ContactFormSectionProps) {
               Send a message
             </h2>
 
+            {submitted ? (
+              <div className="mt-7 rounded-input border border-sage/40 bg-sage-soft/50 p-6">
+                <p className="font-heading text-lg font-bold text-deep-green">
+                  Message sent — thank you.
+                </p>
+                <p className="mt-1 font-body text-sm text-ink/80">
+                  We&apos;ll get back to you soon.
+                </p>
+              </div>
+            ) : (
             <form
               className="mt-7 space-y-5"
-              action="#"
+              onSubmit={handleSubmit}
               aria-label="Contact form"
             >
               <div className="grid gap-5 sm:grid-cols-2">
@@ -92,10 +136,31 @@ export function ContactFormSection({ contact }: ContactFormSectionProps) {
                 />
               </div>
 
-              <Button type="submit" variant="donate" className="mt-2">
-                Send message &rarr;
+              <input
+                type="text"
+                name="company"
+                tabIndex={-1}
+                autoComplete="off"
+                aria-hidden
+                className="hidden"
+              />
+
+              {error && (
+                <p className="font-body text-sm text-coral" role="alert">
+                  {error}
+                </p>
+              )}
+
+              <Button
+                type="submit"
+                variant="donate"
+                className="mt-2"
+                disabled={submitting}
+              >
+                {submitting ? "Sending…" : "Send message →"}
               </Button>
             </form>
+            )}
           </motion.div>
 
           <motion.div

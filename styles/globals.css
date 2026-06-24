@@ -106,6 +106,18 @@
   }
 }
 
+/*
+ * The Studio (/studio) shares this stylesheet via the root layout, so the site's
+ * base heading styles above leak into it. Scope-reset headings inside the Studio
+ * to the Studio theme's muted foreground for a consistent, lighter look. Left
+ * unlayered so it wins over the `@layer base` heading rules.
+ */
+.studio-root :is(h1, h2, h3, h4, h5, h6) {
+  color: var(--card-muted-fg-color);
+  font-family: inherit;
+  letter-spacing: normal;
+}
+
 @layer utilities {
   .text-balance {
     text-wrap: balance;

@@ -10,5 +10,12 @@ import { NextStudio } from "next-sanity/studio";
 import config from "@/sanity.config";
 
 export default function Studio() {
-  return <NextStudio config={config} />;
+  // `display: contents` keeps the Studio's own full-height layout intact while
+  // giving us a hook (`.studio-root`) to scope overrides that counteract the
+  // site's global base styles leaking in from the shared root layout.
+  return (
+    <div className="studio-root" style={{ display: "contents" }}>
+      <NextStudio config={config} />
+    </div>
+  );
 }

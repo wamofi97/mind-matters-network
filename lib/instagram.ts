@@ -11,37 +11,14 @@ export type InstagramPost = {
 const MAX_POSTS = 6;
 const FALLBACK_ALT = "Mind Matters Network on Instagram";
 
-// Instagram's private web profile endpoint. Undocumented and unofficial: it
-// works from a browser/residential IP but is frequently blocked when called
-// from server/datacenter IPs (Vercel etc.), so we always keep a static
-// fallback. The app id is the public Instagram web client id.
+// --- Instagram private web endpoint (works locally, blocked on Vercel) -------
 const IG_APP_ID = "936619743392459";
 const IG_ENDPOINT = "https://www.instagram.com/api/v1/users/web_profile_info/";
 const USER_AGENT =
   "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36";
 
-// Minimal shape of the fields we read from the response.
-type IgCaptionEdge = { node?: { text?: string } };
-type IgMediaNode = {
-  id?: string;
-  shortcode?: string;
-  display_url?: string;
-  thumbnail_src?: string;
-  accessibility_caption?: string;
-  edge_media_to_caption?: { edges?: IgCaptionEdge[] };
-};
-type IgWebProfileResponse = {
-  data?: {
-    user?: {
-      edge_owner_to_timeline_media?: { edges?: { node?: IgMediaNode }[] };
-    };
-  };
-};
-
-function buildAlt(node: IgMediaNode): string {
-  const caption = node.edge_media_to_caption?.edges?.[0]?.node?.text;
-  const raw = node.accessibility_caption || caption || "";
-  const trimmed = raw.replace(/\s+/g, " ").trim();
+function clampAlt(raw: string | undefined | null): string {
+  const trimmed = (raw || "").replace(/\s+/g, " ").trim();
   if (!trimmed) return FALLBACK_ALT;
   return trimmed.length > 140 ? `${trimmed.slice(0, 137)}…` : trimmed;
 }
@@ -55,15 +32,79 @@ function getFallbackPosts(): InstagramPost[] {
   }));
 }
 
-/**
- * Fetches the latest Instagram posts for the configured username via
- * Instagram's web profile endpoint, falling back to curated static images when
- * the request is blocked or fails (so the section never renders empty).
- */
-export async function getInstagramPosts(): Promise<InstagramPost[]> {
-  const username = siteConfig.instagramUsername;
-  const url = `${IG_ENDPOINT}?username=${encodeURIComponent(username)}`;
+// --- Behold JSON feed (reliable on Vercel) -----------------------------------
+// Only the fields we use; see https://github.com/BeholdSocial/behold-types.
+type BeholdSize = { mediaUrl?: string | null };
+type BeholdPost = {
+  id?: string;
+  permalink?: string;
+  mediaUrl?: string;
+  thumbnailUrl?: string;
+  altText?: string;
+  prunedCaption?: string;
+  caption?: string;
+  sizes?: {
+    small?: BeholdSize;
+    medium?: BeholdSize;
+    large?: BeholdSize;
+    full?: BeholdSize;
+  };
+};
+type BeholdFeed = { posts?: BeholdPost[] };
 
+async function fetchFromBehold(feedUrl: string): Promise<InstagramPost[] | null> {
+  try {
+    const res = await fetch(feedUrl, { next: { revalidate: 3600 } });
+    if (!res.ok) return null;
+
+    const data = (await res.json()) as BeholdFeed | BeholdPost[];
+    const rawPosts = Array.isArray(data) ? data : data.posts;
+    if (!rawPosts?.length) return null;
+
+    const posts = rawPosts
+      .map((post, i): InstagramPost | null => {
+        const image =
+          post.sizes?.medium?.mediaUrl ||
+          post.sizes?.large?.mediaUrl ||
+          post.sizes?.small?.mediaUrl ||
+          post.sizes?.full?.mediaUrl ||
+          post.thumbnailUrl ||
+          post.mediaUrl;
+        if (!image) return null;
+        return {
+          id: post.id ?? `ig-${i}`,
+          image,
+          permalink: post.permalink || siteConfig.instagramUrl,
+          alt: clampAlt(post.altText || post.prunedCaption || post.caption),
+        };
+      })
+      .filter((post): post is InstagramPost => post !== null)
+      .slice(0, MAX_POSTS);
+
+    return posts.length ? posts : null;
+  } catch {
+    return null;
+  }
+}
+
+type IgNode = {
+  id?: string;
+  shortcode?: string;
+  display_url?: string;
+  thumbnail_src?: string;
+  accessibility_caption?: string;
+  edge_media_to_caption?: { edges?: { node?: { text?: string } }[] };
+};
+type IgResponse = {
+  data?: {
+    user?: { edge_owner_to_timeline_media?: { edges?: { node?: IgNode }[] } };
+  };
+};
+
+async function fetchFromInstagram(): Promise<InstagramPost[] | null> {
+  const url = `${IG_ENDPOINT}?username=${encodeURIComponent(
+    siteConfig.instagramUsername
+  )}`;
   try {
     const res = await fetch(url, {
       headers: {
@@ -79,14 +120,13 @@ export async function getInstagramPosts(): Promise<InstagramPost[]> {
         "Sec-Fetch-Mode": "cors",
         "Sec-Fetch-Dest": "empty",
       },
-      // Revalidate hourly so new posts show up without a rebuild.
       next: { revalidate: 3600 },
     });
-    if (!res.ok) return getFallbackPosts();
+    if (!res.ok) return null;
 
-    const data = (await res.json()) as IgWebProfileResponse;
+    const data = (await res.json()) as IgResponse;
     const edges = data.data?.user?.edge_owner_to_timeline_media?.edges;
-    if (!edges?.length) return getFallbackPosts();
+    if (!edges?.length) return null;
 
     const posts = edges
       .map(({ node }, i): InstagramPost | null => {
@@ -99,14 +139,36 @@ export async function getInstagramPosts(): Promise<InstagramPost[]> {
           permalink: node.shortcode
             ? `https://www.instagram.com/p/${node.shortcode}/`
             : siteConfig.instagramUrl,
-          alt: buildAlt(node),
+          alt: clampAlt(
+            node.accessibility_caption ||
+              node.edge_media_to_caption?.edges?.[0]?.node?.text
+          ),
         };
       })
       .filter((post): post is InstagramPost => post !== null)
       .slice(0, MAX_POSTS);
 
-    return posts.length ? posts : getFallbackPosts();
+    return posts.length ? posts : null;
   } catch {
-    return getFallbackPosts();
+    return null;
   }
+}
+
+/**
+ * Returns the latest Instagram posts.
+ *
+ * Preference order:
+ *  1. Behold JSON feed (BEHOLD_FEED_URL) — reliable in production / on Vercel.
+ *  2. Instagram's private web endpoint — works from residential IPs (local dev)
+ *     but is blocked on datacenter IPs, so it's only a convenience fallback.
+ *  3. Curated static images — so the section never renders empty.
+ */
+export async function getInstagramPosts(): Promise<InstagramPost[]> {
+  const feedUrl = process.env.BEHOLD_FEED_URL;
+
+  const posts = feedUrl
+    ? await fetchFromBehold(feedUrl)
+    : await fetchFromInstagram();
+
+  return posts ?? getFallbackPosts();
 }

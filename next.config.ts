@@ -7,7 +7,21 @@ const nextConfig: NextConfig = {
         protocol: "https",
         hostname: "images.unsplash.com",
       },
-      // Instagram CDN hosts (dynamic regional subdomains) for the IG feed.
+      // Sanity image CDN (CMS-managed assets).
+      {
+        protocol: "https",
+        hostname: "cdn.sanity.io",
+      },
+      // Behold (https://behold.so) CDN hosts for the Instagram feed.
+      {
+        protocol: "https",
+        hostname: "behold.pictures",
+      },
+      {
+        protocol: "https",
+        hostname: "cdn.behold.pictures",
+      },
+      // Instagram CDN hosts (used by the direct-endpoint fallback in local dev).
       {
         protocol: "https",
         hostname: "**.cdninstagram.com",

@@ -1,6 +1,8 @@
 import { EnvelopeIcon } from "@sanity/icons";
 import { defineField, defineType } from "sanity";
 
+import { StatusInput } from "../components/status-input";
+
 const kindOptions = [
   { title: "Contact", value: "contact" },
   { title: "Get Involved", value: "involvement" },
@@ -25,46 +27,51 @@ export const submissionType = defineType({
   title: "Submission",
   type: "document",
   icon: EnvelopeIcon,
-  // Submissions are machine-created; lock the shape down in the Studio UI.
-  readOnly: true,
+  // NOTE: don't set document-level `readOnly` here — it locks the whole
+  // document and a field-level `readOnly: false` can't override it. Instead,
+  // each captured field is individually read-only and only `status` is editable
+  // so editors can triage submissions without altering the submitted data.
   fields: [
-    defineField({
-      name: "kind",
-      title: "Kind",
-      type: "string",
-      options: { list: kindOptions, layout: "radio" },
-      validation: (rule) => rule.required(),
-    }),
     defineField({
       name: "status",
       title: "Status",
       type: "string",
       options: { list: statusOptions, layout: "radio" },
       initialValue: "new",
-      // The one field editors should be able to change for triage.
-      readOnly: false,
+      // The one field editors can change, for triage. The custom input also
+      // auto-marks a submission "Read" when it's first opened.
+      components: { input: StatusInput },
+    }),
+    defineField({
+      name: "kind",
+      title: "Kind",
+      type: "string",
+      options: { list: kindOptions, layout: "radio" },
+      readOnly: true,
     }),
     defineField({
       name: "name",
       title: "Name",
       type: "string",
-      // Not required at the schema level: newsletter signups are email-only.
-      // The API enforces name for the kinds that collect it.
+      readOnly: true,
     }),
     defineField({
       name: "email",
       title: "Email",
       type: "string",
+      readOnly: true,
     }),
     defineField({
       name: "phone",
       title: "Phone",
       type: "string",
+      readOnly: true,
     }),
     defineField({
       name: "subject",
       title: "Subject",
       type: "string",
+      readOnly: true,
       hidden: ({ document }) => document?.kind !== "contact",
     }),
     defineField({
@@ -72,6 +79,7 @@ export const submissionType = defineType({
       title: "Interest",
       type: "string",
       description: "The path selected on the Get Involved form.",
+      readOnly: true,
       hidden: ({ document }) => document?.kind !== "involvement",
     }),
     defineField({
@@ -79,6 +87,7 @@ export const submissionType = defineType({
       title: "Message",
       type: "text",
       rows: 5,
+      readOnly: true,
     }),
     defineField({
       name: "event",
@@ -86,18 +95,21 @@ export const submissionType = defineType({
       type: "reference",
       to: [{ type: "event" }],
       weak: true,
+      readOnly: true,
       hidden: ({ document }) => document?.kind !== "eventRegistration",
     }),
     defineField({
       name: "eventTitle",
       title: "Event title",
       type: "string",
+      readOnly: true,
       hidden: ({ document }) => document?.kind !== "eventRegistration",
     }),
     defineField({
       name: "eventSlug",
       title: "Event slug",
       type: "string",
+      readOnly: true,
       hidden: ({ document }) => document?.kind !== "eventRegistration",
     }),
     defineField({
@@ -105,11 +117,13 @@ export const submissionType = defineType({
       title: "Source",
       type: "string",
       description: "Page path the submission came from.",
+      readOnly: true,
     }),
     defineField({
       name: "submittedAt",
       title: "Submitted at",
       type: "datetime",
+      readOnly: true,
     }),
   ],
   orderings: [

@@ -1,0 +1,108 @@
+"use client";
+
+import { useState } from "react";
+import Link from "next/link";
+import { ArrowRight } from "lucide-react";
+import { motion } from "framer-motion";
+import { Container } from "@/components/layout/container";
+import { fadeUpVariants } from "@/lib/motion";
+import type { EventItem } from "@/constants/events";
+
+export function EventCtaBanner({ event }: { event: EventItem }) {
+  const isPast = event.status === "past";
+  const [submitted, setSubmitted] = useState(false);
+
+  return (
+    <section
+      id="save-your-spot"
+      className="scroll-mt-24 py-12 md:py-16"
+    >
+      <Container>
+        <motion.div
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: "-60px" }}
+          variants={fadeUpVariants}
+          className="relative overflow-hidden rounded-card bg-deep-green px-7 py-10 text-cream shadow-card md:px-12 md:py-14"
+        >
+          <div
+            className="pointer-events-none absolute -right-16 -top-16 size-64 rounded-full bg-cream/10 blur-2xl"
+            aria-hidden
+          />
+
+          <div className="relative grid items-center gap-8 lg:grid-cols-2">
+            <div>
+              <h2 className="font-heading text-butter text-3xl font-bold leading-tight sm:text-4xl">
+                {isPast ? "Catch the recap" : "Save your spot"}
+              </h2>
+              <p className="mt-3 max-w-md font-body text-sm leading-relaxed text-cream/80 sm:text-base">
+                {isPast
+                  ? "This one's wrapped, but the conversation lives on. Watch the recap and join the next."
+                  : "There are limited spots available — register and we'll send the details to your inbox."}
+              </p>
+            </div>
+
+            {isPast ? (
+              <div className="flex flex-wrap gap-3 lg:justify-end">
+                <Link
+                  href="#recap"
+                  className="inline-flex items-center gap-2 rounded-full bg-cream px-6 py-3 font-body text-sm font-semibold text-deep-green transition-transform duration-300 hover:scale-[1.02]"
+                >
+                  View Recap
+                  <ArrowRight className="size-4" />
+                </Link>
+                <Link
+                  href="/events"
+                  className="inline-flex items-center gap-2 rounded-full border-2 border-cream/40 px-6 py-3 font-body text-sm font-semibold text-cream transition-colors duration-300 hover:bg-cream/10"
+                >
+                  See upcoming
+                  <ArrowRight className="size-4" />
+                </Link>
+              </div>
+            ) : submitted ? (
+              <p className="font-body text-base font-medium text-cream lg:text-right">
+                You&apos;re on the list — see you there.
+              </p>
+            ) : (
+              <form
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  setSubmitted(true);
+                }}
+                className="flex w-full flex-col gap-3 lg:ml-auto lg:max-w-sm"
+              >
+                <input
+                  type="text"
+                  required
+                  placeholder="Your name"
+                  aria-label="Full name"
+                  className="w-full rounded-full border border-cream/20 bg-cream/10 px-5 py-3 font-body text-sm text-cream placeholder:text-cream/50 focus:outline-none focus:ring-2 focus:ring-cream/40"
+                />
+                <input
+                  type="tel"
+                  required
+                  placeholder="Phone number"
+                  aria-label="Phone number"
+                  className="w-full rounded-full border border-cream/20 bg-cream/10 px-5 py-3 font-body text-sm text-cream placeholder:text-cream/50 focus:outline-none focus:ring-2 focus:ring-cream/40"
+                />
+                <input
+                  type="email"
+                  required
+                  placeholder="you@email.com"
+                  aria-label="Email address"
+                  className="w-full rounded-full border border-cream/20 bg-cream/10 px-5 py-3 font-body text-sm text-cream placeholder:text-cream/50 focus:outline-none focus:ring-2 focus:ring-cream/40"
+                />
+                <button
+                  type="submit"
+                  className="inline-flex shrink-0 items-center justify-center gap-2 rounded-full bg-coral px-6 py-3 font-body text-sm font-semibold text-cream transition-transform duration-300 hover:scale-[1.02]"
+                >
+                  Reserve my spot
+                </button>
+              </form>
+            )}
+          </div>
+        </motion.div>
+      </Container>
+    </section>
+  );
+}

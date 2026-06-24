@@ -18,8 +18,11 @@ import { contactSettingsType } from "./contactSettingsType";
 import { eventsSettingsType } from "./eventsSettingsType";
 import { resourcesSettingsType } from "./resourcesSettingsType";
 import { siteSettingsType } from "./siteSettingsType";
+import { submissionType } from "./submissionType";
 
 export const schemaTypes: SchemaTypeDefinition[] = [
+  // Inbox
+  submissionType,
   // Collections
   eventType,
   resourceType,

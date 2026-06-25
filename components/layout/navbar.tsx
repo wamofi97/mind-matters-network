@@ -3,12 +3,31 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
-import { Menu, X } from "lucide-react";
+import {
+  BookOpen,
+  CalendarDays,
+  HeartHandshake,
+  Home,
+  Info,
+  Mail,
+  Menu,
+  X,
+  type LucideIcon,
+} from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { type NavLink } from "@/lib/content/site";
 import { Button } from "@/components/ui/button";
 import { Logo } from "@/components/shared/logo";
 import { Container } from "./container";
+
+const navIcons: Record<string, LucideIcon> = {
+  "/": Home,
+  "/about": Info,
+  "/events": CalendarDays,
+  "/resources": BookOpen,
+  "/get-involved": HeartHandshake,
+  "/contact": Mail,
+};
 
 type NavbarProps = {
   navLinks: NavLink[];
@@ -178,21 +197,29 @@ export function Navbar({ navLinks, joinHref }: NavbarProps) {
           exit={{ x: "100%" }}
           transition={{ type: "tween", ease: "easeInOut", duration: 0.35 }}
           style={{ top: headerHeight, height: `calc(100dvh - ${headerHeight}px)` }}
-          className="fixed right-0 z-40 flex w-3/4 max-w-sm flex-col overflow-y-auto border-l rounded-bl-card border-border/60 bg-cream/80 backdrop-blur-sm px-4 pb-8 pt-6 shadow-card lg:hidden"
+          className="fixed right-0 z-40 flex w-3/4 max-w-sm flex-col overflow-y-auto border-l rounded-bl-card border-border/60 bg-cream/90 backdrop-blur-sm px-4 pb-8 pt-6 shadow-card lg:hidden"
         >
           <ul className="flex flex-1 flex-col justify-center gap-1">
             {navLinks.map((link) => {
               const active = isActive(link.href);
+              const Icon = navIcons[link.href];
               return (
                 <li key={link.href}>
                   <Link
                     href={link.href}
                     aria-current={active ? "page" : undefined}
-                    className={`block rounded-2lg px-4 py-6 text-center text-base text-ink text-balance ${
-                      active ? "bg-sage-soft/60 font-bold" : "font-medium hover:bg-sage-soft/50"
+                    className={`flex items-center gap-8 rounded-2xl px-4 py-4 text-base text-ink ${
+                      active ? "bg-sage-soft/30 border border-sage/20 font-bold" : "font-medium hover:bg-sage-soft/50"
                     }`}
                     onClick={() => setOpen(false)}
                   >
+                    {Icon && (
+                      <Icon
+                        className={`size-5 shrink-0 ${
+                          active ? "text-deep-green" : "text-ink/70"
+                        }`}
+                      />
+                    )}
                     {link.label}
                   </Link>
                 </li>

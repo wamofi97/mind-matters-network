@@ -82,7 +82,7 @@ export function Footer({ settings }: FooterProps) {
               <h3 className="font-body text-sm font-semibold text-tag-butter">
                 Follow
               </h3>
-              <div className="mt-4 flex justify-between">
+              <div className="mt-4 flex flex-wrap gap-3 md:gap-2 md:justify-around">
                 {socialLinks.map((social) => {
                   const Icon = getSocialIcon(social.icon);
                   return (

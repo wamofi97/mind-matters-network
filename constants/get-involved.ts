@@ -15,7 +15,7 @@ export const involvementPaths: InvolvementPath[] = [
     emoji: "🙌",
     title: "Volunteer",
     description:
-      "Help run events, moderate circles, or design resources. About 4 hours a month.",
+      "Help run events, moderate circles, or design resources.",
     perks: ["Flexible hours", "Training included", "Remote-friendly"],
     tone: "coral",
   },

@@ -18,9 +18,9 @@ export default async function EventsPage() {
   ]);
 
   return (
-    <PageShell>
+    <PageShell className="isolate overflow-hidden">
       <div
-        className="pointer-events-none absolute -left-32 -top-24 size-[460px] rounded-full bg-coral/25 blur-3xl"
+        className="pointer-events-none absolute -left-32 -top-24 -z-10 size-[460px] rounded-full bg-coral/25 blur-3xl"
         aria-hidden
       />
       <EventsHeroSection hero={settings.hero} />

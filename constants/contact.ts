@@ -1,4 +1,4 @@
-import { Instagram, Linkedin, Youtube } from "lucide-react";
+import { Facebook, Instagram, Linkedin, Youtube } from "lucide-react";
 import { TikTokIcon } from "@/components/shared/icons";
 import { siteConfig } from "@/constants/navigation";
 
@@ -11,6 +11,7 @@ export const contactDetails = {
 
 export const contactSocials = [
   { label: "Instagram", href: siteConfig.instagramUrl, icon: Instagram },
+  { label: "Facebook", href: "https://www.facebook.com", icon: Facebook },
   { label: "TikTok", href: "https://www.tiktok.com", icon: TikTokIcon },
   { label: "YouTube", href: "https://www.youtube.com", icon: Youtube },
   { label: "LinkedIn", href: "https://www.linkedin.com", icon: Linkedin },

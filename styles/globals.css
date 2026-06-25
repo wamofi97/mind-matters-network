@@ -65,11 +65,17 @@
 @layer base {
   html {
     scroll-behavior: smooth;
+    overflow-x: clip;
   }
 
   body {
     @apply bg-background text-foreground font-body antialiased;
     font-feature-settings: "kern" 1, "liga" 1;
+    /* Off-screen decorative blobs (negative insets) must never widen the
+       viewport or trigger horizontal scroll on small screens. `clip` avoids
+       creating a scroll container, so the fixed navbar and internal
+       carousels keep working. */
+    overflow-x: clip;
   }
 
   h1,

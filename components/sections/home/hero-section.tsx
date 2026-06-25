@@ -15,7 +15,7 @@ type HeroSectionProps = {
 
 export function HeroSection({ hero }: HeroSectionProps) {
   return (
-    <section className="relative flex items-center justify-center lg:h-screen overflow-hidden pb-16 pt-24 md:pb-24 md:pt-28 lg:pb-32 lg:pt-32">
+    <section className="relative overflow-hidden flex items-center justify-center lg:h-screen pb-16 pt-24 md:pb-24 md:pt-28 lg:pb-32 lg:pt-32">
       <div
         className="pointer-events-none absolute -right-32 top-20 size-[420px] rounded-full bg-butter/50 blur-3xl"
         aria-hidden

@@ -16,13 +16,13 @@ export default async function GetInvolvedPage() {
     await getGetInvolvedSettings();
 
   return (
-    <PageShell>
+    <PageShell className="isolate overflow-hidden">
       <div
-        className="pointer-events-none absolute -right-24 -top-16 size-[420px] rounded-full bg-sage-soft/30 blur-2xl md:size-[520px]"
+        className="pointer-events-none absolute -right-24 -top-16 -z-10 size-[420px] rounded-full bg-sage-soft/30 blur-2xl md:size-[520px]"
         aria-hidden
       />
       <div
-        className="pointer-events-none absolute -left-32 top-1/3 size-72 rounded-full bg-lilac-soft blur-3xl"
+        className="pointer-events-none absolute -left-32 top-1/3 -z-10 size-72 rounded-full bg-lilac-soft blur-3xl"
         aria-hidden
       />
       <GetInvolvedHeroSection hero={hero} />

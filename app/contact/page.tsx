@@ -14,13 +14,13 @@ export default async function ContactPage() {
   const contact = await getContactSettings();
 
   return (
-    <PageShell>
+    <PageShell className="isolate overflow-hidden">
       <div
-        className="pointer-events-none absolute -left-40 -top-16 size-[420px] rounded-full bg-lilac-soft/70 blur-3xl"
+        className="pointer-events-none absolute -left-40 -top-16 -z-10 size-[420px] rounded-full bg-lilac-soft/70 blur-3xl"
         aria-hidden
       />
       <div
-        className="pointer-events-none absolute -right-32 top-10 size-[460px] rounded-full bg-butter/40 blur-3xl"
+        className="pointer-events-none absolute -right-32 top-10 -z-10 size-[460px] rounded-full bg-butter/40 blur-3xl"
         aria-hidden
       />
       <ContactHeroSection hero={contact.hero} />

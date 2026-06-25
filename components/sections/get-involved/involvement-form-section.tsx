@@ -17,19 +17,19 @@ const toneStyles: Record<
 > = {
   coral: {
     card: "bg-coral/20",
-    selected: "ring-coral",
+    selected: "ring-coral border-coral",
     chip: "bg-coral/15 text-coral",
     link: "text-coral",
   },
   butter: {
-    card: "bg-butter/60",
-    selected: "ring-butter",
+    card: "bg-butter/30",
+    selected: "ring-butter border-amber-300 ",
     chip: "bg-ink/5 text-ink",
     link: "text-ink",
   },
   mint: {
     card: "bg-sage-soft",
-    selected: "ring-sage",
+    selected: "ring-sage border-sage",
     chip: "bg-deep-green/10 text-deep-green",
     link: "text-deep-green",
   },
@@ -111,11 +111,11 @@ export function InvolvementFormSection({
                 variants={fadeUpVariants}
                 aria-pressed={isSelected}
                 className={cn(
-                  "group flex flex-col rounded-card p-7 text-left transition-all duration-300 hover:-translate-y-1 lg:p-8",
+                  "group flex flex-col rounded-card border-2 p-7 text-left transition-all duration-300 hover:-translate-y-1 lg:p-8",
                   tone.card,
                   isSelected
                     ? cn("shadow-card ring-2", tone.selected)
-                    : "shadow-soft ring-2 ring-transparent"
+                    : "border-transparent shadow-soft ring-2 ring-transparent"
                 )}
               >
                 <span className="text-3xl" aria-hidden>
@@ -226,7 +226,7 @@ export function InvolvementFormSection({
                   id="phone"
                   name="phone"
                   type="tel"
-                  placeholder="+1 555 0100"
+                  placeholder="+60123456789"
                   className={inputClasses}
                 />
               </div>

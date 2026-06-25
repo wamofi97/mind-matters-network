@@ -19,13 +19,13 @@ export default async function ResourcesPage() {
   ]);
 
   return (
-    <PageShell>
+    <PageShell className="isolate overflow-hidden">
        <div
-        className="pointer-events-none absolute -right-32 -top-10 size-[460px] rounded-full bg-butter/40 blur-3xl"
+        className="pointer-events-none absolute -right-32 -top-10 -z-10 size-[460px] rounded-full bg-butter/40 blur-3xl"
         aria-hidden
       />
       <div
-        className="pointer-events-none absolute -left-32 top-1/2 size-72 rounded-full bg-lilac-soft/70 blur-3xl"
+        className="pointer-events-none absolute -left-32 top-1/2 -z-10 size-72 rounded-full bg-lilac-soft/70 blur-3xl"
         aria-hidden
       />
       <ResourcesHeroSection hero={settings.hero} />

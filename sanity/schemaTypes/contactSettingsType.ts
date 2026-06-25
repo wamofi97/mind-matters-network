@@ -4,9 +4,11 @@ import { defineArrayMember, defineField, defineType } from "sanity";
 // Keys map to icons in `lib/content/icons.ts` (socialIconMap).
 const socialIconOptions = [
   { title: "Instagram", value: "instagram" },
+  { title: "Facebook", value: "facebook" },
   { title: "TikTok", value: "tiktok" },
   { title: "YouTube", value: "youtube" },
   { title: "LinkedIn", value: "linkedin" },
+  { title: "Twitter", value: "twitter" },
 ];
 
 export const contactSettingsType = defineType({

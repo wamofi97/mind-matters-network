@@ -24,7 +24,7 @@ export function FaqSection({ faqs, heading }: FaqSectionProps) {
     <section className="py-16 md:py-24">
       <Container>
         <SectionHeader label={heading.label} align="center">
-          <h2 className="text-balance font-heading text-4xl font-bold leading-[1.08] text-ink sm:text-5xl lg:text-6xl">
+          <h2 className="font-heading text-4xl font-bold leading-[1.08] text-ink sm:text-5xl">
             {heading.headingLead}{" "}
             <CoralEmphasis>{heading.headingEmphasis}</CoralEmphasis>
           </h2>

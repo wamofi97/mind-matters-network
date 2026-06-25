@@ -12,7 +12,7 @@ type GetInvolvedHeroSectionProps = {
 
 export function GetInvolvedHeroSection({ hero }: GetInvolvedHeroSectionProps) {
   return (
-    <section className="relative py-16 md:pt-28 md:pb-12">
+    <section className="relative pt-20 pb-8">
 
       <Container>
         <motion.div

@@ -30,7 +30,7 @@ export function EventDetailHero({ event }: { event: EventItem }) {
   ];
 
   return (
-    <section className="relative overflow-hidden py-12 md:pt-20 md:pb-12">
+    <section className="relative overflow-hidden pt-20 pb-16">
       <div
         className="pointer-events-none absolute -left-32 -top-24 size-[420px] rounded-full bg-lilac-soft/60 blur-3xl"
         aria-hidden

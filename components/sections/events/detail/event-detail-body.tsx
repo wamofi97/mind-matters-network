@@ -123,7 +123,7 @@ export function EventDetailBody({ event }: { event: EventItem }) {
               "mt-12 grid gap-5 lg:mt-14 lg:gap-6",
               detail.facilitators.length > 1
                 ? "grid-cols-2 sm:grid-cols-2 lg:grid-cols-4"
-                : "grid-cols-1 w-1/4"
+                : "grid-cols-1 w-1/2 md:w-1/4"
             )}
             initial="hidden"
             whileInView="visible"

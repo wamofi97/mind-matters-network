@@ -123,12 +123,14 @@ export function InvolvementFormSection({
                     : "border-transparent shadow-soft ring-2 ring-transparent"
                 )}
               >
+                <div className="flex items-center gap-2">
                 <span className="text-3xl" aria-hidden>
-                  {path.emoji}
-                </span>
-                <h3 className="mt-4 font-heading text-xl font-bold text-ink sm:text-2xl">
-                  {path.title}
-                </h3>
+                    {path.emoji}
+                  </span>
+                  <h3 className="font-heading text-xl font-bold text-ink sm:text-2xl">
+                    {path.title}
+                  </h3>
+                </div>
                 <p className="mt-2 font-body text-sm leading-relaxed text-ink/70">
                   {path.description}
                 </p>

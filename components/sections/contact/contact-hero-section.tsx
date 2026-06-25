@@ -12,7 +12,7 @@ type ContactHeroSectionProps = {
 
 export function ContactHeroSection({ hero }: ContactHeroSectionProps) {
   return (
-    <section className="relative overflow-hidden py-16 md:pt-28 md:pb-12">
+    <section className="relative overflow-hidden pt-20 pb-8">
 
       <Container>
         <motion.div

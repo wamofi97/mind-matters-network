@@ -26,7 +26,8 @@ export type FeaturedResource = {
   tag: string;
   title: string;
   description: string;
-  href: string;
+  /** Undefined when no file has been uploaded and no external URL is set. */
+  href?: string;
   icon: LucideIcon;
 };
 
@@ -44,7 +45,8 @@ export const featuredResource: FeaturedResource = {
   title: "The Big Little Guide to Feeling Things.",
   description:
     "A 60-page illustrated companion for naming, sitting with, and moving through emotions — written by and for young people.",
-  href: "/resources/big-little-guide",
+  // No file uploaded yet — falls back to the "Coming soon" state until a real
+  // file/URL is provided (e.g. via Sanity). Avoids linking to a dead route.
   icon: HeartPulse,
 };
 

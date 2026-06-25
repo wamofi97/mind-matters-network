@@ -42,7 +42,19 @@ export const resourcesSettingsType = defineType({
           type: "text",
           rows: 3,
         }),
-        defineField({ name: "href", title: "Download / link", type: "string" }),
+        defineField({
+          name: "file",
+          title: "Downloadable file",
+          type: "file",
+          description: "Optional PDF/asset visitors can download.",
+        }),
+        defineField({
+          name: "externalUrl",
+          title: "External link",
+          type: "url",
+          description:
+            "Optional link used for the Download button if no file is uploaded.",
+        }),
         defineField({
           name: "icon",
           title: "Icon",

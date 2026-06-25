@@ -20,7 +20,14 @@ export type ResourcesSettings = {
 
 const query = `*[_type == "resourcesSettings"][0]{
   hero,
-  featured
+  featured{
+    tag,
+    title,
+    description,
+    icon,
+    "fileUrl": file.asset->url,
+    externalUrl
+  }
 }`;
 
 const FALLBACK_HERO: PageHero = {
@@ -41,9 +48,14 @@ const FALLBACK_FEATURED: FeaturedResource = {
   icon: getResourceIconKey(fallbackFeatured.icon),
 };
 
+type SanityFeatured = Partial<Omit<FeaturedResource, "href">> & {
+  fileUrl?: string;
+  externalUrl?: string;
+};
+
 type SanityResourcesSettings = {
   hero?: Partial<PageHero>;
-  featured?: Partial<FeaturedResource>;
+  featured?: SanityFeatured;
 };
 
 export async function getResourcesSettings(): Promise<ResourcesSettings> {
@@ -62,7 +74,7 @@ export async function getResourcesSettings(): Promise<ResourcesSettings> {
       tag: doc?.featured?.tag ?? FALLBACK_FEATURED.tag,
       title: doc?.featured?.title ?? FALLBACK_FEATURED.title,
       description: doc?.featured?.description ?? FALLBACK_FEATURED.description,
-      href: doc?.featured?.href || undefined,
+      href: doc?.featured?.fileUrl || doc?.featured?.externalUrl || undefined,
       icon: doc?.featured?.icon ?? FALLBACK_FEATURED.icon,
     },
   };

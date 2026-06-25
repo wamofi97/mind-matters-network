@@ -76,7 +76,8 @@ export function FeaturedResourceSection({
                 className="inline-flex w-fit shrink-0 cursor-not-allowed items-center gap-2 rounded-full bg-cream/40 px-6 py-3 font-body text-sm font-semibold text-ink/50"
                 aria-disabled
               >
-                Coming soon
+                Download free PDF
+                <Download className="size-4" />
               </span>
             )}
           </div>

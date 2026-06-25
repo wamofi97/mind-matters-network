@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence, motion, type Variants } from "framer-motion";
 import { Container } from "@/components/layout/container";
 import { Button } from "@/components/ui/button";
 import { SectionLabel, CoralEmphasis } from "@/components/shared/section-header";
@@ -13,10 +13,119 @@ import { fadeUpVariants } from "@/lib/motion";
 
 const AUTOPLAY_MS = 6000;
 
+const EASE_OUT = [0.22, 1, 0.36, 1] as const;
+
+const slideVariants: Variants = {
+  enter: (direction: number) => ({
+    x: direction >= 0 ? 72 : -72,
+    opacity: 0,
+  }),
+  center: {
+    x: 0,
+    opacity: 1,
+    transition: {
+      duration: 0.7,
+      ease: EASE_OUT,
+      when: "beforeChildren",
+      delayChildren: 0.08,
+      staggerChildren: 0.06,
+    },
+  },
+  exit: (direction: number) => ({
+    x: direction >= 0 ? -48 : 48,
+    opacity: 0,
+    transition: { duration: 0.4, ease: "easeIn" },
+  }),
+};
+
+const textVariants: Variants = {
+  enter: { opacity: 0, y: 10 },
+  center: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.5, ease: EASE_OUT },
+  },
+  exit: { opacity: 0, transition: { duration: 0.25 } },
+};
+
+const quoteVariants: Variants = {
+  enter: {},
+  center: {
+    transition: { delayChildren: 0.05, staggerChildren: 0.045 },
+  },
+  exit: { opacity: 0, transition: { duration: 0.25 } },
+};
+
+const wordVariants: Variants = {
+  enter: { opacity: 0, y: 14, filter: "blur(4px)" },
+  center: {
+    opacity: 1,
+    y: 0,
+    filter: "blur(0px)",
+    transition: { duration: 0.45, ease: EASE_OUT },
+  },
+  exit: { opacity: 0, transition: { duration: 0.2 } },
+};
+
 type TestimonialSectionProps = {
   heading: SectionHeading;
   testimonials: Testimonial[];
 };
+
+function TestimonialCard({ testimonial }: { testimonial: Testimonial }) {
+  return (
+    <div className="grid md:grid-cols-[minmax(240px,320px)_1fr]">
+      <div className="relative aspect-square min-h-[280px] bg-coral/30 md:aspect-auto md:min-h-[360px]">
+        {testimonial.image ? (
+          <Image
+            src={testimonial.image}
+            alt={testimonial.imageAlt}
+            fill
+            className="object-cover object-top"
+            sizes="(max-width: 768px) 100vw, 320px"
+          />
+        ) : null}
+      </div>
+
+      <div className="relative flex flex-col justify-center px-8 py-10 md:px-12 md:py-14 lg:px-16">
+        <motion.span
+          variants={textVariants}
+          className="pointer-events-none absolute bottom-6 right-8 font-heading text-[8rem] leading-none text-coral/15 select-none md:text-[10rem]"
+          aria-hidden
+        >
+          &ldquo;
+        </motion.span>
+        <motion.blockquote
+          variants={quoteVariants}
+          className="relative z-10 font-heading text-2xl font-medium italic leading-snug text-ink sm:text-3xl lg:text-[2rem] lg:leading-snug"
+        >
+          {testimonial.quote.split(" ").map((word, i, words) => (
+            <span key={`${word}-${i}`}>
+              <motion.span variants={wordVariants} className="inline-block">
+                {word}
+              </motion.span>
+              {i < words.length - 1 ? " " : ""}
+            </span>
+          ))}
+        </motion.blockquote>
+        <footer className="relative z-10 mt-8">
+          <motion.p
+            variants={textVariants}
+            className="font-body text-lg font-semibold text-ink"
+          >
+            {testimonial.name}
+          </motion.p>
+          <motion.p
+            variants={textVariants}
+            className="mt-1 font-body text-sm text-muted-foreground"
+          >
+            {testimonial.meta}
+          </motion.p>
+        </footer>
+      </div>
+    </div>
+  );
+}
 
 export function TestimonialSection({
   heading,
@@ -125,48 +234,36 @@ export function TestimonialSection({
           viewport={{ once: true, margin: "-80px" }}
           variants={fadeUpVariants}
         >
-          <AnimatePresence mode="wait" custom={direction}>
+          {/* Ghost copy keeps the container at the active slide's height */}
+          <div className="invisible" aria-hidden>
+            <TestimonialCard testimonial={active} />
+          </div>
+
+          <AnimatePresence initial={false} custom={direction}>
             <motion.article
               key={index}
               custom={direction}
-              initial={{ opacity: 0, x: direction >= 0 ? 40 : -40 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: direction >= 0 ? -40 : 40 }}
-              transition={{ duration: 0.35, ease: "easeInOut" }}
+              variants={slideVariants}
+              initial="enter"
+              animate="center"
+              exit="exit"
+              drag="x"
+              dragConstraints={{ left: 0, right: 0 }}
+              dragElastic={0.2}
+              onDragStart={() => setIsPaused(true)}
+              onDragEnd={(_, info) => {
+                setIsPaused(false);
+                const swipe = info.offset.x;
+                const velocity = info.velocity.x;
+                if (swipe < -80 || velocity < -500) {
+                  paginate(1);
+                } else if (swipe > 80 || velocity > 500) {
+                  paginate(-1);
+                }
+              }}
+              className="absolute inset-0 cursor-grab touch-pan-y active:cursor-grabbing"
             >
-              <div className="grid md:grid-cols-[minmax(240px,320px)_1fr]">
-                <div className="relative aspect-square min-h-[280px] bg-coral/30 md:aspect-auto md:min-h-[360px]">
-                  {active.image ? (
-                    <Image
-                      src={active.image}
-                      alt={active.imageAlt}
-                      fill
-                      className="object-cover object-top"
-                      sizes="(max-width: 768px) 100vw, 320px"
-                    />
-                  ) : null}
-                </div>
-
-                <div className="relative flex flex-col justify-center px-8 py-10 md:px-12 md:py-14 lg:px-16">
-                  <span
-                    className="pointer-events-none absolute bottom-6 right-8 font-heading text-[8rem] leading-none text-coral/15 select-none md:text-[10rem]"
-                    aria-hidden
-                  >
-                    &ldquo;
-                  </span>
-                  <blockquote className="relative z-10 font-heading text-2xl font-medium italic leading-snug text-ink sm:text-3xl lg:text-[2rem] lg:leading-snug">
-                    {active.quote}
-                  </blockquote>
-                  <footer className="relative z-10 mt-8">
-                    <p className="font-body text-lg font-semibold text-ink">
-                      {active.name}
-                    </p>
-                    <p className="mt-1 font-body text-sm text-muted-foreground">
-                      {active.meta}
-                    </p>
-                  </footer>
-                </div>
-              </div>
+              <TestimonialCard testimonial={active} />
             </motion.article>
           </AnimatePresence>
         </motion.div>

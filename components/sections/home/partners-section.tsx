@@ -70,7 +70,7 @@ export function PartnersSection({ heading, partners }: PartnersSectionProps) {
 
           <div className="mt-12 text-center">
             <Link
-              href="/partners"
+              href="/get-involved?path=partner"
               className="inline-flex items-center gap-2 font-body text-sm font-semibold text-ink transition-colors hover:text-coral"
             >
               Become a partner

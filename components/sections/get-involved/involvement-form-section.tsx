@@ -42,12 +42,17 @@ const labelClasses = "font-body text-sm font-semibold text-ink";
 
 type InvolvementFormSectionProps = {
   paths: InvolvementPath[];
+  /** Pre-selects a path when linked with `?path=` (e.g. from the home page). */
+  initialPath?: string;
 };
 
 export function InvolvementFormSection({
   paths,
+  initialPath,
 }: InvolvementFormSectionProps) {
-  const [selected, setSelected] = useState(paths[0]?.id ?? "");
+  const defaultPath =
+    paths.find((path) => path.id === initialPath)?.id ?? paths[0]?.id ?? "";
+  const [selected, setSelected] = useState(defaultPath);
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [error, setError] = useState<string | null>(null);

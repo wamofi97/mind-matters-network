@@ -11,9 +11,17 @@ export const metadata: Metadata = {
     "Volunteer, lead a campus chapter, or partner with Mind Matters Network. Whatever your time, skill, or geography — there's a way to plug in.",
 };
 
-export default async function GetInvolvedPage() {
-  const { hero, voicesHeading, paths, voices } =
-    await getGetInvolvedSettings();
+export default async function GetInvolvedPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ path?: string | string[] }>;
+}) {
+  const [{ hero, voicesHeading, paths, voices }, { path }] = await Promise.all([
+    getGetInvolvedSettings(),
+    searchParams,
+  ]);
+
+  const initialPath = Array.isArray(path) ? path[0] : path;
 
   return (
     <PageShell className="isolate overflow-hidden">
@@ -26,7 +34,7 @@ export default async function GetInvolvedPage() {
         aria-hidden
       />
       <GetInvolvedHeroSection hero={hero} />
-      <InvolvementFormSection paths={paths} />
+      <InvolvementFormSection paths={paths} initialPath={initialPath} />
       <VolunteerVoicesSection voices={voices} heading={voicesHeading} />
     </PageShell>
   );

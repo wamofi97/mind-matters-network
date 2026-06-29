@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import { AnimatePresence, motion, type Variants } from "framer-motion";
+import { motion, type Variants } from "framer-motion";
 import { Container } from "@/components/layout/container";
 import { Button } from "@/components/ui/button";
 import { SectionLabel, CoralEmphasis } from "@/components/shared/section-header";
@@ -15,56 +15,43 @@ const AUTOPLAY_MS = 6000;
 
 const EASE_OUT = [0.22, 1, 0.36, 1] as const;
 
-const slideVariants: Variants = {
-  enter: (direction: number) => ({
-    x: direction >= 0 ? 72 : -72,
-    opacity: 0,
-  }),
-  center: {
-    x: 0,
-    opacity: 1,
+const SPRING = { type: "spring", stiffness: 320, damping: 36 } as const;
+
+const textColumnVariants: Variants = {
+  inactive: {},
+  active: {
     transition: {
-      duration: 0.7,
-      ease: EASE_OUT,
       when: "beforeChildren",
-      delayChildren: 0.08,
-      staggerChildren: 0.06,
+      delayChildren: 0.12,
+      staggerChildren: 0.05,
     },
   },
-  exit: (direction: number) => ({
-    x: direction >= 0 ? -48 : 48,
-    opacity: 0,
-    transition: { duration: 0.4, ease: "easeIn" },
-  }),
 };
 
-const textVariants: Variants = {
-  enter: { opacity: 0, y: 10 },
-  center: {
+const lineVariants: Variants = {
+  inactive: { opacity: 0, y: 10 },
+  active: {
     opacity: 1,
     y: 0,
     transition: { duration: 0.5, ease: EASE_OUT },
   },
-  exit: { opacity: 0, transition: { duration: 0.25 } },
 };
 
 const quoteVariants: Variants = {
-  enter: {},
-  center: {
-    transition: { delayChildren: 0.05, staggerChildren: 0.045 },
+  inactive: {},
+  active: {
+    transition: { staggerChildren: 0.04 },
   },
-  exit: { opacity: 0, transition: { duration: 0.25 } },
 };
 
 const wordVariants: Variants = {
-  enter: { opacity: 0, y: 14, filter: "blur(4px)" },
-  center: {
+  inactive: { opacity: 0, y: 14, filter: "blur(4px)" },
+  active: {
     opacity: 1,
     y: 0,
     filter: "blur(0px)",
     transition: { duration: 0.45, ease: EASE_OUT },
   },
-  exit: { opacity: 0, transition: { duration: 0.2 } },
 };
 
 type TestimonialSectionProps = {
@@ -72,10 +59,16 @@ type TestimonialSectionProps = {
   testimonials: Testimonial[];
 };
 
-function TestimonialCard({ testimonial }: { testimonial: Testimonial }) {
+function TestimonialCard({
+  testimonial,
+  isActive,
+}: {
+  testimonial: Testimonial;
+  isActive: boolean;
+}) {
   return (
-    <div className="grid md:grid-cols-[minmax(240px,320px)_1fr]">
-      <div className="relative aspect-square min-h-[280px] bg-coral/30 md:aspect-auto md:min-h-[360px]">
+    <div className="grid h-full md:grid-cols-[minmax(240px,320px)_1fr]">
+      <div className="relative h-100 bg-coral/30 sm:h-80 md:h-auto md:min-h-[360px]">
         {testimonial.image ? (
           <Image
             src={testimonial.image}
@@ -83,13 +76,19 @@ function TestimonialCard({ testimonial }: { testimonial: Testimonial }) {
             fill
             className="object-cover object-top"
             sizes="(max-width: 768px) 100vw, 320px"
+            draggable={false}
           />
         ) : null}
       </div>
 
-      <div className="relative flex flex-col justify-center px-8 py-10 md:px-12 md:py-14 lg:px-16">
+      <motion.div
+        variants={textColumnVariants}
+        initial="inactive"
+        animate={isActive ? "active" : "inactive"}
+        className="relative flex flex-col justify-center px-8 py-10 md:px-12 md:py-14 lg:px-16"
+      >
         <motion.span
-          variants={textVariants}
+          variants={lineVariants}
           className="pointer-events-none absolute bottom-6 right-8 font-heading text-[8rem] leading-none text-coral/15 select-none md:text-[10rem]"
           aria-hidden
         >
@@ -110,19 +109,19 @@ function TestimonialCard({ testimonial }: { testimonial: Testimonial }) {
         </motion.blockquote>
         <footer className="relative z-10 mt-8">
           <motion.p
-            variants={textVariants}
+            variants={lineVariants}
             className="font-body text-lg font-semibold text-ink"
           >
             {testimonial.name}
           </motion.p>
           <motion.p
-            variants={textVariants}
+            variants={lineVariants}
             className="mt-1 font-body text-sm text-muted-foreground"
           >
             {testimonial.meta}
           </motion.p>
         </footer>
-      </div>
+      </motion.div>
     </div>
   );
 }
@@ -131,27 +130,53 @@ export function TestimonialSection({
   heading,
   testimonials,
 }: TestimonialSectionProps) {
-  const [index, setIndex] = useState(0);
-  const [direction, setDirection] = useState(0);
+  const count = testimonials.length;
+
+  // Three stacked copies so the track can keep moving in the same direction
+  // past either end; we silently re-center after each loop.
+  const loop = [...testimonials, ...testimonials, ...testimonials];
+  const loopLength = loop.length;
+  const step = 100 / loopLength;
+
+  // `page` is the position within the tripled track. We keep it resting in the
+  // middle copy: [count, 2*count - 1].
+  const [page, setPage] = useState(count);
+  const [instant, setInstant] = useState(false);
   const [progress, setProgress] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
   const progressRef = useRef(0);
+  const viewportRef = useRef<HTMLDivElement>(null);
 
-  const paginate = useCallback((newDirection: number) => {
-    setDirection(newDirection);
+  const activeIndex = ((page % count) + count) % count;
+
+  const paginate = useCallback((direction: number) => {
     setProgress(0);
     progressRef.current = 0;
-    setIndex(
-      (prev) => (prev + newDirection + testimonials.length) % testimonials.length,
-    );
+    setInstant(false);
+    setPage((prev) => prev + direction);
   }, []);
 
   const goTo = (next: number) => {
-    setDirection(next > index ? 1 : -1);
     setProgress(0);
     progressRef.current = 0;
-    setIndex(next);
+    setInstant(false);
+    setPage((prev) => prev - (((prev % count) + count) % count) + next);
   };
+
+  const handleSettle = useCallback(() => {
+    setPage((prev) => {
+      if (prev < count) {
+        setInstant(true);
+        return prev + count;
+      }
+      if (prev >= 2 * count) {
+        setInstant(true);
+        return prev - count;
+      }
+      setInstant(false);
+      return prev;
+    });
+  }, [count]);
 
   useEffect(() => {
     progressRef.current = progress;
@@ -172,11 +197,10 @@ export function TestimonialSection({
     };
     frame = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(frame);
-  }, [isPaused, index, paginate]);
+  }, [isPaused, activeIndex, paginate]);
 
-  const active = testimonials[index];
-  const counter = `${String(index + 1).padStart(2, "0")} / ${String(
-    testimonials.length,
+  const counter = `${String(activeIndex + 1).padStart(2, "0")} / ${String(
+    count,
   ).padStart(2, "0")}`;
 
   return (
@@ -227,72 +251,78 @@ export function TestimonialSection({
           onFocusCapture={() => setIsPaused(true)}
           onBlurCapture={() => setIsPaused(false)}
         >
-        <motion.div
-          className="relative overflow-hidden rounded-card bg-card shadow-card"
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, margin: "-80px" }}
-          variants={fadeUpVariants}
-        >
-          {/* Ghost copy keeps the container at the active slide's height */}
-          <div className="invisible" aria-hidden>
-            <TestimonialCard testimonial={active} />
-          </div>
-
-          <AnimatePresence initial={false} custom={direction}>
-            <motion.article
-              key={index}
-              custom={direction}
-              variants={slideVariants}
-              initial="enter"
-              animate="center"
-              exit="exit"
+          <motion.div
+            ref={viewportRef}
+            className="relative overflow-hidden rounded-card bg-card shadow-card"
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: "-80px" }}
+            variants={fadeUpVariants}
+          >
+            <motion.div
+              className="flex cursor-grab touch-pan-y active:cursor-grabbing"
+              style={{ width: `${loopLength * 100}%` }}
               drag="x"
-              dragConstraints={{ left: 0, right: 0 }}
-              dragElastic={0.2}
+              dragConstraints={viewportRef}
+              dragElastic={0.12}
+              animate={{ x: `-${page * step}%` }}
+              transition={instant ? { duration: 0 } : SPRING}
+              onAnimationComplete={handleSettle}
               onDragStart={() => setIsPaused(true)}
               onDragEnd={(_, info) => {
                 setIsPaused(false);
+                const slideWidth = viewportRef.current?.offsetWidth ?? 1;
                 const swipe = info.offset.x;
                 const velocity = info.velocity.x;
-                if (swipe < -80 || velocity < -500) {
+                if (swipe < -slideWidth * 0.25 || velocity < -500) {
                   paginate(1);
-                } else if (swipe > 80 || velocity > 500) {
+                } else if (swipe > slideWidth * 0.25 || velocity > 500) {
                   paginate(-1);
                 }
               }}
-              className="absolute inset-0 cursor-grab touch-pan-y active:cursor-grabbing"
             >
-              <TestimonialCard testimonial={active} />
-            </motion.article>
-          </AnimatePresence>
-        </motion.div>
+              {loop.map((testimonial, i) => (
+                <div
+                  key={`${testimonial.name}-${i}`}
+                  className="shrink-0"
+                  style={{ width: `${step}%` }}
+                  aria-hidden={i !== page}
+                >
+                  <TestimonialCard
+                    testimonial={testimonial}
+                    isActive={i % count === activeIndex}
+                  />
+                </div>
+              ))}
+            </motion.div>
+          </motion.div>
 
-        <div className="mt-6 flex items-center gap-3">
-          {testimonials.map((testimonial, i) => {
-            const scaleX = i < index ? 1 : i === index ? progress : 0;
-            return (
-              <Button
-                key={testimonial.name}
-                variant="unstyled"
-                size="none"
-                type="button"
-                onClick={() => goTo(i)}
-                aria-label={`Go to testimonial from ${testimonial.name}`}
-                aria-current={i === index}
-                className="group relative h-1.5 flex-1 overflow-hidden rounded-full bg-ink/10"
-              >
-                <span
-                  className="absolute inset-0 origin-left rounded-full bg-deep-green"
-                  style={{
-                    transform: `scaleX(${scaleX})`,
-                    transition: i === index ? "none" : "transform 0.3s ease",
-                  }}
-                />
-              </Button>
-            );
-          })}
-        </div>
+          <div className="mt-6 flex items-center gap-3">
+            {testimonials.map((testimonial, i) => {
+              const scaleX =
+                i < activeIndex ? 1 : i === activeIndex ? progress : 0;
+              return (
+                <Button
+                  key={testimonial.name}
+                  variant="unstyled"
+                  size="none"
+                  type="button"
+                  onClick={() => goTo(i)}
+                  aria-label={`Go to testimonial from ${testimonial.name}`}
+                  aria-current={i === activeIndex}
+                  className="group relative h-1.5 flex-1 overflow-hidden rounded-full bg-ink/10"
+                >
+                  <span
+                    className="absolute inset-0 origin-left rounded-full bg-deep-green"
+                    style={{
+                      transform: `scaleX(${scaleX})`,
+                      transition: "none",
+                    }}
+                  />
+                </Button>
+              );
+            })}
+          </div>
         </div>
       </Container>
     </section>

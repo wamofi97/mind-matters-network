@@ -1,7 +1,6 @@
 import type { SanityImageSource } from "@sanity/image-url";
 
-import { team as fallbackTeam, type TeamTone } from "@/constants/about";
-import { isSanityConfigured } from "@/sanity/env";
+import { type TeamTone } from "@/constants/about";
 import { sanityFetch } from "@/sanity/lib/fetch";
 import { urlForImage } from "@/sanity/lib/image";
 
@@ -21,14 +20,12 @@ type SanityTeamMember = Omit<TeamMemberContent, "image"> & {
 };
 
 export async function getTeam(): Promise<TeamMemberContent[]> {
-  if (!isSanityConfigured) return [...fallbackTeam];
-
-  const docs = await sanityFetch<SanityTeamMember[]>({
+  const docs = await sanityFetch<SanityTeamMember[] | null>({
     query: teamQuery,
     tags: ["teamMember"],
   });
 
-  if (!docs || docs.length === 0) return [...fallbackTeam];
+  if (!docs) return [];
 
   return docs.map((doc) => ({
     name: doc.name,

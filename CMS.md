@@ -32,9 +32,10 @@ and Resources collections, so editing those collections keeps the homepage in
 sync. The Instagram strip pulls live posts from the Instagram feed (via Behold);
 only its handle/URL is editable, under **Site settings**.
 
-> The site is built with a **safe fallback**: until Sanity is connected, pages
-> render the seed content in `constants/`. Once env vars are set and content is
-> published, the live Sanity content takes over automatically.
+> Sanity is the **single source of truth** for the content above. The loaders in
+> `lib/content/` read straight from Sanity — there is no bundled seed content to
+> fall back to, so a missing field renders empty and a missing singleton document
+> throws a clear error. Keep the singleton documents published and populated.
 
 ---
 
@@ -60,12 +61,13 @@ cp .env.example .env.local
 NEXT_PUBLIC_SANITY_PROJECT_ID="<your project id>"
 NEXT_PUBLIC_SANITY_DATASET="production"
 NEXT_PUBLIC_SANITY_API_VERSION="2024-10-01"
-SANITY_API_WRITE_TOKEN="<write token>"   # only needed for the migration below
+SANITY_API_WRITE_TOKEN="<write token>"   # optional: only for write-access scripts
 ```
 
-Create the write token at **sanity.io/manage → API → Tokens** with **Editor**
-permission. It is only used by the migration script and must never be exposed in
-the browser (note it has no `NEXT_PUBLIC_` prefix).
+The write token (created at **sanity.io/manage → API → Tokens** with **Editor**
+permission) is only needed if you add a script that writes to Sanity. The running
+site only reads, so it is otherwise optional. Never expose it in the browser (note
+it has no `NEXT_PUBLIC_` prefix).
 
 ### 3. Allow the Studio origin (CORS)
 
@@ -75,17 +77,14 @@ In **sanity.io/manage → API → CORS origins**, add the URLs where the Studio 
 - `http://localhost:3000`
 - your production domain, e.g. `https://mindmatters.example.com`
 
-### 4. Seed existing content (run once)
+### 4. Add content in the Studio
 
-This imports everything currently in `constants/` and uploads the existing
-images into Sanity as real, replaceable assets:
-
-```bash
-npm run migrate
-```
-
-Open `http://localhost:3000/studio` and you should see all events, resources,
-team members, FAQs, testimonials, and partners.
+The dataset for this project is already seeded. For a brand-new/empty dataset,
+open `http://localhost:3000/studio` and create the documents directly: the seven
+**Pages** singletons (Home, About, Events, Resources, Get Involved, Contact, Site
+settings) plus entries in each collection (Events, Resources, Team, FAQs,
+Testimonials, Partners). Because there is no fallback content, the singletons must
+exist and be published for their pages to render.
 
 ---
 
@@ -145,18 +144,17 @@ sanity.config.ts            Studio config (schemas + plugins), basePath /studio
 app/studio/[[...tool]]/      Embedded Studio route (client-only Studio wrapper)
 app/api/revalidate/         Webhook endpoint that refreshes cache on publish
 sanity/
-  env.ts                    Reads env; `isSanityConfigured` toggles the fallback
+  env.ts                    Reads env (project id, dataset, api version)
   lib/client.ts             Read client (CDN, published perspective)
   lib/fetch.ts              sanityFetch() helper for Server Components
   lib/image.ts              urlForImage() — builds CDN image URLs
   structure.ts              Studio sidebar layout
   schemaTypes/              Document + object schemas
-lib/content/                App-facing data layer (Sanity → typed data, w/ fallback)
+lib/content/                App-facing data layer (Sanity → typed data)
   events.ts  resources.ts  team.ts  faqs.ts  testimonials.ts  partners.ts  icons.ts
   home.ts  about-settings.ts  get-involved.ts  contact.ts  site.ts
   events-settings.ts  resources-settings.ts
-  page-content.ts           Shared hero/heading shapes + merge helpers
-scripts/migrate-to-sanity.ts  One-off seed import
+  page-content.ts           Shared hero/heading shapes + normalize helpers
 ```
 
 Data is fetched in **Server Components** (the page files) and passed to the

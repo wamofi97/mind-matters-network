@@ -1,16 +1,12 @@
 import type { SanityImageSource } from "@sanity/image-url";
 
-import { stats as fallbackStats, communityAvatars } from "@/constants/homepage";
-import { siteConfig } from "@/constants/navigation";
-import { isSanityConfigured } from "@/sanity/env";
 import { sanityFetch } from "@/sanity/lib/fetch";
 import { urlForImage } from "@/sanity/lib/image";
-import { getFeatureIconKey } from "@/lib/content/icons";
 import { getEvents } from "@/lib/content/events";
 import { getResources } from "@/lib/content/resources";
 import {
   type SectionHeading,
-  mergeHeading,
+  normalizeHeading,
 } from "@/lib/content/page-content";
 
 export type { SectionHeading } from "@/lib/content/page-content";
@@ -92,110 +88,49 @@ type SanityHome = {
   stats?: HomeStat[];
 };
 
-function fallback(): HomeSettings {
-  return {
-    hero: {
-      eyebrow: "A youth-led mental health movement",
-      titlePrefix: "Uniting youth for",
-      titleHighlight: "mental health",
-      titleSuffix: "awareness.",
-      description:
-        "We are building a kinder generation through real conversations, free resources, and a community that shows up for each other.",
-      image:
-        "https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=800&q=80",
-      primaryCtaLabel: "Get Involved",
-      primaryCtaHref: siteConfig.joinHref,
-      secondaryCtaLabel: "Learn More",
-      secondaryCtaHref: "/about",
-      badgePrimary: "you matter 🍁",
-      badgeSecondary: "it's okay to not be okay ☘️",
-      socialProofCount: "2445+",
-      socialProofText: "young people already in the movement",
-      communityAvatars: [...communityAvatars],
-    },
-    stats: fallbackStats.map((s) => ({
-      value: s.value,
-      label: s.label,
-      tone: s.tone,
-      icon: getFeatureIconKey(s.icon),
-    })),
-    eventsHeading: {
-      label: "Upcoming events",
-      headingLead: "Show up.",
-      headingEmphasis: "Belong.",
-    },
-    resourcesHeading: {
-      label: "Free resources",
-      headingLead: "Tools for the",
-      headingEmphasis: "hard days.",
-    },
-    testimonialHeading: {
-      label: "Real stories",
-      headingLead: "Words from our",
-      headingEmphasis: "community.",
-    },
-    partnersHeading: {
-      label: "Our partners",
-      headingLead: "Participating",
-      headingEmphasis: "institutions.",
-    },
-    instagramHeading: {
-      label: "",
-      headingLead: "Find us on the",
-      headingEmphasis: "gram",
-    },
-  };
-}
-
 export async function getHomeSettings(): Promise<HomeSettings> {
-  if (!isSanityConfigured) return fallback();
-
   const doc = await sanityFetch<SanityHome | null>({
     query,
     tags: ["homeSettings"],
   });
-  if (!doc) return fallback();
+  if (!doc) throw new Error("Missing 'homeSettings' document in Sanity.");
 
-  const fb = fallback();
-  const avatars = (doc.communityAvatars ?? []).map((a) => urlForImage(a)).filter(Boolean);
+  const communityAvatars = (doc.communityAvatars ?? [])
+    .map((a) => urlForImage(a))
+    .filter(Boolean);
 
   return {
     hero: {
-      eyebrow: doc.heroEyebrow ?? fb.hero.eyebrow,
-      titlePrefix: doc.heroTitlePrefix ?? fb.hero.titlePrefix,
-      titleHighlight: doc.heroTitleHighlight ?? fb.hero.titleHighlight,
-      titleSuffix: doc.heroTitleSuffix ?? fb.hero.titleSuffix,
-      description: doc.heroDescription ?? fb.hero.description,
-      image: urlForImage(doc.heroImage) || fb.hero.image,
-      primaryCtaLabel: doc.heroPrimaryCtaLabel ?? fb.hero.primaryCtaLabel,
-      primaryCtaHref: doc.heroPrimaryCtaHref ?? fb.hero.primaryCtaHref,
-      secondaryCtaLabel: doc.heroSecondaryCtaLabel ?? fb.hero.secondaryCtaLabel,
-      secondaryCtaHref: doc.heroSecondaryCtaHref ?? fb.hero.secondaryCtaHref,
-      badgePrimary: doc.heroBadgePrimary ?? fb.hero.badgePrimary,
-      badgeSecondary: doc.heroBadgeSecondary ?? fb.hero.badgeSecondary,
-      socialProofCount: doc.heroSocialProofCount ?? fb.hero.socialProofCount,
-      socialProofText: doc.heroSocialProofText ?? fb.hero.socialProofText,
-      communityAvatars: avatars.length ? avatars : fb.hero.communityAvatars,
+      eyebrow: doc.heroEyebrow ?? "",
+      titlePrefix: doc.heroTitlePrefix ?? "",
+      titleHighlight: doc.heroTitleHighlight ?? "",
+      titleSuffix: doc.heroTitleSuffix ?? "",
+      description: doc.heroDescription ?? "",
+      image: urlForImage(doc.heroImage),
+      primaryCtaLabel: doc.heroPrimaryCtaLabel ?? "",
+      primaryCtaHref: doc.heroPrimaryCtaHref ?? "",
+      secondaryCtaLabel: doc.heroSecondaryCtaLabel ?? "",
+      secondaryCtaHref: doc.heroSecondaryCtaHref ?? "",
+      badgePrimary: doc.heroBadgePrimary ?? "",
+      badgeSecondary: doc.heroBadgeSecondary ?? "",
+      socialProofCount: doc.heroSocialProofCount ?? "",
+      socialProofText: doc.heroSocialProofText ?? "",
+      communityAvatars,
     },
-    stats: doc.stats && doc.stats.length ? doc.stats : fb.stats,
+    stats: doc.stats ?? [],
     eventsHeading: {
-      label: doc.eventsLabel ?? fb.eventsHeading.label,
-      headingLead: doc.eventsHeadingLead ?? fb.eventsHeading.headingLead,
-      headingEmphasis:
-        doc.eventsHeadingEmphasis ?? fb.eventsHeading.headingEmphasis,
+      label: doc.eventsLabel ?? "",
+      headingLead: doc.eventsHeadingLead ?? "",
+      headingEmphasis: doc.eventsHeadingEmphasis ?? "",
     },
     resourcesHeading: {
-      label: doc.resourcesLabel ?? fb.resourcesHeading.label,
-      headingLead: doc.resourcesHeadingLead ?? fb.resourcesHeading.headingLead,
-      headingEmphasis:
-        doc.resourcesHeadingEmphasis ?? fb.resourcesHeading.headingEmphasis,
+      label: doc.resourcesLabel ?? "",
+      headingLead: doc.resourcesHeadingLead ?? "",
+      headingEmphasis: doc.resourcesHeadingEmphasis ?? "",
     },
-    testimonialHeading: mergeHeading(
-      doc.testimonialHeading,
-      fb.testimonialHeading
-    ),
-    partnersHeading: mergeHeading(doc.partnersHeading, fb.partnersHeading),
-    instagramHeading: mergeHeading(doc.instagramHeading, fb.instagramHeading),
+    testimonialHeading: normalizeHeading(doc.testimonialHeading),
+    partnersHeading: normalizeHeading(doc.partnersHeading),
+    instagramHeading: normalizeHeading(doc.instagramHeading),
   };
 }
 

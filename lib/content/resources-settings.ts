@@ -1,8 +1,5 @@
-import { featuredResource as fallbackFeatured } from "@/constants/resources";
-import { isSanityConfigured } from "@/sanity/env";
 import { sanityFetch } from "@/sanity/lib/fetch";
-import { type PageHero, mergeHero } from "@/lib/content/page-content";
-import { getResourceIconKey } from "@/lib/content/icons";
+import { type PageHero, normalizeHero } from "@/lib/content/page-content";
 
 export type FeaturedResource = {
   tag: string;
@@ -30,24 +27,6 @@ const query = `*[_type == "resourcesSettings"][0]{
   }
 }`;
 
-const FALLBACK_HERO: PageHero = {
-  label: "Free resources",
-  titleLead: "Tools, words &",
-  titleEmphasis: "small comforts.",
-  titleSuffix: "",
-  description:
-    "Designed by youth, reviewed by professionals — every resource is free to download, share and remix.",
-  paragraphs: [],
-};
-
-const FALLBACK_FEATURED: FeaturedResource = {
-  tag: fallbackFeatured.tag,
-  title: fallbackFeatured.title,
-  description: fallbackFeatured.description,
-  href: fallbackFeatured.href,
-  icon: getResourceIconKey(fallbackFeatured.icon),
-};
-
 type SanityFeatured = Partial<Omit<FeaturedResource, "href">> & {
   fileUrl?: string;
   externalUrl?: string;
@@ -59,23 +38,20 @@ type SanityResourcesSettings = {
 };
 
 export async function getResourcesSettings(): Promise<ResourcesSettings> {
-  if (!isSanityConfigured) {
-    return { hero: FALLBACK_HERO, featured: FALLBACK_FEATURED };
-  }
-
   const doc = await sanityFetch<SanityResourcesSettings | null>({
     query,
     tags: ["resourcesSettings"],
   });
+  if (!doc) throw new Error("Missing 'resourcesSettings' document in Sanity.");
 
   return {
-    hero: mergeHero(doc?.hero, FALLBACK_HERO),
+    hero: normalizeHero(doc.hero),
     featured: {
-      tag: doc?.featured?.tag ?? FALLBACK_FEATURED.tag,
-      title: doc?.featured?.title ?? FALLBACK_FEATURED.title,
-      description: doc?.featured?.description ?? FALLBACK_FEATURED.description,
-      href: doc?.featured?.fileUrl || doc?.featured?.externalUrl || undefined,
-      icon: doc?.featured?.icon ?? FALLBACK_FEATURED.icon,
+      tag: doc.featured?.tag ?? "",
+      title: doc.featured?.title ?? "",
+      description: doc.featured?.description ?? "",
+      href: doc.featured?.fileUrl || doc.featured?.externalUrl || undefined,
+      icon: doc.featured?.icon ?? "",
     },
   };
 }

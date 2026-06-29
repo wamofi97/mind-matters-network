@@ -1,11 +1,8 @@
 import {
-  resources as fallbackResources,
   type ResourceCategory,
   type ResourceTone,
 } from "@/constants/resources";
-import { isSanityConfigured } from "@/sanity/env";
 import { sanityFetch } from "@/sanity/lib/fetch";
-import { getResourceIconKey } from "@/lib/content/icons";
 
 /**
  * Serializable resource shape passed from Server to Client Components. `icon` is
@@ -44,26 +41,11 @@ function mapResource(doc: SanityResource): ResourceContent {
 }
 
 export async function getResources(): Promise<ResourceContent[]> {
-  if (!isSanityConfigured) return mapFallback();
-
-  const docs = await sanityFetch<SanityResource[]>({
+  const docs = await sanityFetch<SanityResource[] | null>({
     query: resourcesQuery,
     tags: ["resource"],
   });
 
-  if (!docs || docs.length === 0) return mapFallback();
+  if (!docs) return [];
   return docs.map(mapResource);
-}
-
-function mapFallback(): ResourceContent[] {
-  return fallbackResources.map((r) => ({
-    slug: r.slug,
-    title: r.title,
-    category: r.category,
-    year: r.year,
-    description: r.description,
-    icon: getResourceIconKey(r.icon),
-    tone: r.tone,
-    href: r.href,
-  }));
 }

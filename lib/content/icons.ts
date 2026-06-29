@@ -45,14 +45,6 @@ export function getResourceIcon(key: string | undefined): LucideIcon {
   return resourceIconMap[key ?? ""] ?? HeartPulse;
 }
 
-/** Reverse lookup: find the string key for a given Lucide icon component. */
-export function getResourceIconKey(icon: LucideIcon): ResourceIconKey {
-  const entry = Object.entries(resourceIconMap).find(
-    ([, component]) => component === icon
-  );
-  return (entry?.[0] as ResourceIconKey) ?? "heart";
-}
-
 /**
  * Feature icons used by homepage stats and About values. Keep in sync with the
  * `iconOptions` lists in `sanity/schemaTypes/homeSettingsType.ts` and
@@ -71,13 +63,6 @@ export function getFeatureIcon(key: string | undefined): IconComponent {
   return featureIconMap[key ?? ""] ?? Sparkles;
 }
 
-export function getFeatureIconKey(icon: IconComponent): string {
-  const entry = Object.entries(featureIconMap).find(
-    ([, component]) => component === icon
-  );
-  return entry?.[0] ?? "sparkles";
-}
-
 /**
  * Social icons used on the Contact page. Keep in sync with the `iconOptions`
  * list in `sanity/schemaTypes/contactSettingsType.ts`.
@@ -93,11 +78,4 @@ export const socialIconMap: Record<string, IconComponent> = {
 
 export function getSocialIcon(key: string | undefined): IconComponent {
   return socialIconMap[key ?? ""] ?? Instagram;
-}
-
-export function getSocialIconKey(icon: IconComponent): string {
-  const entry = Object.entries(socialIconMap).find(
-    ([, component]) => component === icon
-  );
-  return entry?.[0] ?? "instagram";
 }

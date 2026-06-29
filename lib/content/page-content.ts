@@ -1,6 +1,7 @@
 /**
  * Shared shapes for editable page chrome (hero + section headings) and helpers
- * that merge a (possibly partial) Sanity object with bundled fallback values.
+ * that normalize a (possibly partial) Sanity object into the full shape the UI
+ * expects. Missing fields resolve to empty values — there is no bundled content.
  */
 
 export type SectionHeading = {
@@ -18,28 +19,25 @@ export type PageHero = {
   paragraphs: string[];
 };
 
-export function mergeHeading(
-  doc: Partial<SectionHeading> | undefined | null,
-  fb: SectionHeading
+export function normalizeHeading(
+  doc: Partial<SectionHeading> | undefined | null
 ): SectionHeading {
   return {
-    label: doc?.label ?? fb.label,
-    headingLead: doc?.headingLead ?? fb.headingLead,
-    headingEmphasis: doc?.headingEmphasis ?? fb.headingEmphasis,
+    label: doc?.label ?? "",
+    headingLead: doc?.headingLead ?? "",
+    headingEmphasis: doc?.headingEmphasis ?? "",
   };
 }
 
-export function mergeHero(
-  doc: Partial<PageHero> | undefined | null,
-  fb: PageHero
+export function normalizeHero(
+  doc: Partial<PageHero> | undefined | null
 ): PageHero {
   return {
-    label: doc?.label ?? fb.label,
-    titleLead: doc?.titleLead ?? fb.titleLead,
-    titleEmphasis: doc?.titleEmphasis ?? fb.titleEmphasis,
-    titleSuffix: doc?.titleSuffix ?? fb.titleSuffix,
-    description: doc?.description ?? fb.description,
-    paragraphs:
-      doc?.paragraphs && doc.paragraphs.length ? doc.paragraphs : fb.paragraphs,
+    label: doc?.label ?? "",
+    titleLead: doc?.titleLead ?? "",
+    titleEmphasis: doc?.titleEmphasis ?? "",
+    titleSuffix: doc?.titleSuffix ?? "",
+    description: doc?.description ?? "",
+    paragraphs: doc?.paragraphs ?? [],
   };
 }

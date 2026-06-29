@@ -1,5 +1,3 @@
-import { faqs as fallbackFaqs } from "@/constants/about";
-import { isSanityConfigured } from "@/sanity/env";
 import { sanityFetch } from "@/sanity/lib/fetch";
 
 export type FaqContent = {
@@ -12,13 +10,10 @@ const faqsQuery = `*[_type == "faq"] | order(order asc) {
 }`;
 
 export async function getFaqs(): Promise<FaqContent[]> {
-  if (!isSanityConfigured) return [...fallbackFaqs];
-
-  const docs = await sanityFetch<FaqContent[]>({
+  const docs = await sanityFetch<FaqContent[] | null>({
     query: faqsQuery,
     tags: ["faq"],
   });
 
-  if (!docs || docs.length === 0) return [...fallbackFaqs];
-  return docs;
+  return docs ?? [];
 }

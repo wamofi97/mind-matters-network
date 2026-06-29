@@ -1,7 +1,6 @@
 import type { SanityImageSource } from "@sanity/image-url";
 
-import { events as fallbackEvents, type EventItem } from "@/constants/events";
-import { isSanityConfigured } from "@/sanity/env";
+import { type EventItem } from "@/constants/events";
 import { sanityFetch } from "@/sanity/lib/fetch";
 import { urlForImage } from "@/sanity/lib/image";
 
@@ -50,14 +49,12 @@ function mapEvent(doc: SanityEvent): EventItem {
 }
 
 export async function getEvents(): Promise<EventItem[]> {
-  if (!isSanityConfigured) return fallbackEvents;
-
-  const docs = await sanityFetch<SanityEvent[]>({
+  const docs = await sanityFetch<SanityEvent[] | null>({
     query: eventsQuery,
     tags: ["event"],
   });
 
-  if (!docs || docs.length === 0) return fallbackEvents;
+  if (!docs) return [];
   return docs.map(mapEvent);
 }
 

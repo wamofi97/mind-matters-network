@@ -41,7 +41,7 @@ export function Footer({ settings }: FooterProps) {
             />
           </div>
 
-          <div className="grid gap-10 sm:grid-cols-3 lg:gap-0">
+          <div className="grid grid-cols-2 gap-10 sm:grid-cols-3 lg:gap-0">
             <div>
               <h3 className="font-body text-sm font-semibold text-tag-butter">
                 Explore
@@ -78,7 +78,7 @@ export function Footer({ settings }: FooterProps) {
               </ul>
             </div>
 
-            <div>
+            <div className="col-span-2 sm:col-span-1">
               <h3 className="font-body text-sm font-semibold text-tag-butter">
                 Follow
               </h3>

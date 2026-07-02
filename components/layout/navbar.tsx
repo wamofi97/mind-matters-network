@@ -56,15 +56,15 @@ export function Navbar({ navLinks, joinHref }: NavbarProps) {
   useEffect(() => {
     const handleScroll = () => {
       const currentY = window.scrollY;
-      const heroThreshold = window.innerHeight * 0.8;
+      const hideThreshold = 96;
 
       setScrolled(currentY > 24);
 
       // Don't hide while the mobile menu is open or near the top.
-      if (open || currentY < heroThreshold) {
+      if (open || currentY < hideThreshold) {
         setHidden(false);
       } else if (currentY > lastScrollY.current) {
-        setHidden(true); // scrolling down past the hero
+        setHidden(true); // scrolling down
       } else {
         setHidden(false); // scrolling up
       }

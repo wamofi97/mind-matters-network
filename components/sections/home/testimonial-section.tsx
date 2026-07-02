@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import { motion, type Variants } from "framer-motion";
+import { motion, useAnimationControls, type Variants } from "framer-motion";
 import { Container } from "@/components/layout/container";
 import { Button } from "@/components/ui/button";
 import { SectionLabel, CoralEmphasis } from "@/components/shared/section-header";
@@ -146,6 +146,7 @@ export function TestimonialSection({
   const [isPaused, setIsPaused] = useState(false);
   const progressRef = useRef(0);
   const viewportRef = useRef<HTMLDivElement>(null);
+  const trackControls = useAnimationControls();
 
   const activeIndex = ((page % count) + count) % count;
 
@@ -181,6 +182,13 @@ export function TestimonialSection({
   useEffect(() => {
     progressRef.current = progress;
   }, [progress]);
+
+  useEffect(() => {
+    void trackControls.start({
+      x: `-${page * step}%`,
+      transition: instant ? { duration: 0 } : SPRING,
+    });
+  }, [instant, page, step, trackControls]);
 
   useEffect(() => {
     if (isPaused) return;
@@ -265,8 +273,8 @@ export function TestimonialSection({
               drag="x"
               dragConstraints={viewportRef}
               dragElastic={0.12}
-              animate={{ x: `-${page * step}%` }}
-              transition={instant ? { duration: 0 } : SPRING}
+              dragMomentum={false}
+              animate={trackControls}
               onAnimationComplete={handleSettle}
               onDragStart={() => setIsPaused(true)}
               onDragEnd={(_, info) => {
@@ -274,10 +282,15 @@ export function TestimonialSection({
                 const slideWidth = viewportRef.current?.offsetWidth ?? 1;
                 const swipe = info.offset.x;
                 const velocity = info.velocity.x;
-                if (swipe < -slideWidth * 0.25 || velocity < -500) {
+                if (swipe < -slideWidth * 0.2 || velocity < -500) {
                   paginate(1);
-                } else if (swipe > slideWidth * 0.25 || velocity > 500) {
+                } else if (swipe > slideWidth * 0.2 || velocity > 500) {
                   paginate(-1);
+                } else {
+                  void trackControls.start({
+                    x: `-${page * step}%`,
+                    transition: SPRING,
+                  });
                 }
               }}
             >

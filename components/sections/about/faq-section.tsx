@@ -15,13 +15,21 @@ import { cn } from "@/lib/utils";
 type FaqSectionProps = {
   faqs: FaqContent[];
   heading: SectionHeading;
+  sectionId?: string;
 };
 
-export function FaqSection({ faqs, heading }: FaqSectionProps) {
+const helpLinks = [
+  { label: "Crisis Help", href: "/crisis-help" },
+  { label: "Privacy Policy", href: "/privacy" },
+  { label: "Contact Us", href: "/contact" },
+  { label: "Get Involved", href: "/get-involved" },
+];
+
+export function FaqSection({ faqs, heading, sectionId = "faq" }: FaqSectionProps) {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
 
   return (
-    <section className="py-16 md:py-24">
+    <section id={sectionId} className="scroll-mt-4 py-16 md:py-24">
       <Container>
         <SectionHeader label={heading.label} align="center">
           <h2 className="font-heading text-4xl font-bold leading-[1.08] text-ink sm:text-5xl">
@@ -96,6 +104,25 @@ export function FaqSection({ faqs, heading }: FaqSectionProps) {
           <Button variant="donate" asChild>
             <Link href="/contact">Still curious? Talk to us &rarr;</Link>
           </Button>
+        </motion.div>
+
+        <motion.div
+          className="mx-auto mt-8 max-w-2xl rounded-card border border-border/60 bg-card p-5 shadow-soft sm:p-6"
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: "-60px" }}
+          variants={fadeUpVariants}
+        >
+          <p className="font-body text-xs font-semibold uppercase tracking-[0.16em] text-deep-green/80">
+            Helpful links
+          </p>
+          <div className="mt-4 flex flex-wrap justify-between gap-2">
+            {helpLinks.map((link) => (
+              <Button key={link.href} variant="secondary" className="flex-1" size="sm" asChild>
+                <Link href={link.href}>{link.label}</Link>
+              </Button>
+            ))}
+          </div>
         </motion.div>
       </Container>
     </section>

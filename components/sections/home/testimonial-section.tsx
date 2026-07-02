@@ -67,8 +67,8 @@ function TestimonialCard({
   isActive: boolean;
 }) {
   return (
-    <div className="grid h-full md:grid-cols-[minmax(240px,320px)_1fr]">
-      <div className="relative h-100 bg-coral/30 sm:h-80 md:h-auto md:min-h-[360px]">
+    <div className="grid h-full sm:grid-cols-[minmax(240px,320px)_1fr]">
+      <div className="relative h-1/2  bg-coral/30 sm:h-auto min-h-[360px]">
         {testimonial.image ? (
           <Image
             src={testimonial.image}
@@ -253,7 +253,7 @@ export function TestimonialSection({
         </div>
 
         <div
-          className="mt-12 lg:mt-16"
+          className="mt-8 lg:mt-16"
           onMouseEnter={() => setIsPaused(true)}
           onMouseLeave={() => setIsPaused(false)}
           onFocusCapture={() => setIsPaused(true)}

@@ -10,8 +10,6 @@ import {
   Home,
   Info,
   Mail,
-  Menu,
-  X,
   type LucideIcon,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -161,12 +159,31 @@ export function Navbar({ navLinks, joinHref }: NavbarProps) {
             variant="unstyled"
             size="none"
             type="button"
-            className="size-10 justify-self-end rounded-full text-ink transition-colors hover:bg-sage-soft/50 lg:col-start-3 lg:hidden [&_svg]:size-5"
+            className="relative size-10 justify-self-end rounded-full text-ink transition-colors hover:bg-sage-soft/50 lg:col-start-3 lg:hidden"
             onClick={() => setOpen(!open)}
             aria-expanded={open}
             aria-label={open ? "Close menu" : "Open menu"}
           >
-            {open ? <X className="size-5" /> : <Menu className="size-5" />}
+            <span className="relative block h-5 w-5">
+              <motion.span
+                aria-hidden="true"
+                className="absolute left-0 top-1/2 h-0.5 w-5 translate-y-[-7px] rounded-full bg-current"
+                animate={open ? { y: 6, rotate: 45 } : { y: 0, rotate: 0 }}
+                transition={{ duration: 0.22, ease: "easeInOut" }}
+              />
+              <motion.span
+                aria-hidden="true"
+                className="absolute left-0 top-1/2 h-0.5 w-5 -translate-y-1/2 rounded-full bg-current"
+                animate={open ? { opacity: 0, scaleX: 0.2 } : { opacity: 1, scaleX: 1 }}
+                transition={{ duration: 0.2, ease: "easeInOut" }}
+              />
+              <motion.span
+                aria-hidden="true"
+                className="absolute left-0 top-1/2 h-0.5 w-5 translate-y-[6px] rounded-full bg-current"
+                animate={open ? { y: -7, rotate: -45 } : { y: 0, rotate: 0 }}
+                transition={{ duration: 0.22, ease: "easeInOut" }}
+              />
+            </span>
           </Button>
         </nav>
       </Container>

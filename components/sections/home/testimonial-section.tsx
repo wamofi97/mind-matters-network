@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import Image from "next/image";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight, Pause, Play } from "lucide-react";
 import { motion, useAnimationControls, type Variants } from "framer-motion";
 import { Container } from "@/components/layout/container";
 import { Button } from "@/components/ui/button";
@@ -143,12 +143,14 @@ export function TestimonialSection({
   const [page, setPage] = useState(count);
   const [instant, setInstant] = useState(false);
   const [progress, setProgress] = useState(0);
-  const [isPaused, setIsPaused] = useState(false);
+  const [isUserPaused, setIsUserPaused] = useState(false);
+  const [isInteractionPaused, setIsInteractionPaused] = useState(false);
   const progressRef = useRef(0);
   const viewportRef = useRef<HTMLDivElement>(null);
   const trackControls = useAnimationControls();
 
   const activeIndex = ((page % count) + count) % count;
+  const isPaused = isUserPaused || isInteractionPaused;
 
   const paginate = useCallback((direction: number) => {
     setProgress(0);
@@ -249,15 +251,36 @@ export function TestimonialSection({
             >
               <ChevronRight className="size-5" />
             </Button>
+            <Button
+              variant="unstyled"
+              size="none"
+              type="button"
+              onClick={() => setIsUserPaused((prev) => !prev)}
+              aria-pressed={isUserPaused}
+              aria-label={isUserPaused ? "Resume testimonial autoplay" : "Pause testimonial autoplay"}
+              className="h-11 rounded-full border-2 border-ink/20 px-4 font-body text-xs font-semibold uppercase tracking-wide text-ink transition-colors hover:border-ink hover:bg-white"
+            >
+              {isUserPaused ? (
+                <>
+                  <Play className="size-4" />
+                  Play
+                </>
+              ) : (
+                <>
+                  <Pause className="size-4" />
+                  Pause
+                </>
+              )}
+            </Button>
           </div>
         </div>
 
         <div
           className="mt-8 lg:mt-16"
-          onMouseEnter={() => setIsPaused(true)}
-          onMouseLeave={() => setIsPaused(false)}
-          onFocusCapture={() => setIsPaused(true)}
-          onBlurCapture={() => setIsPaused(false)}
+          onMouseEnter={() => setIsInteractionPaused(true)}
+          onMouseLeave={() => setIsInteractionPaused(false)}
+          onFocusCapture={() => setIsInteractionPaused(true)}
+          onBlurCapture={() => setIsInteractionPaused(false)}
         >
           <motion.div
             ref={viewportRef}
@@ -276,9 +299,9 @@ export function TestimonialSection({
               dragMomentum={false}
               animate={trackControls}
               onAnimationComplete={handleSettle}
-              onDragStart={() => setIsPaused(true)}
+              onDragStart={() => setIsInteractionPaused(true)}
               onDragEnd={(_, info) => {
-                setIsPaused(false);
+                setIsInteractionPaused(false);
                 const slideWidth = viewportRef.current?.offsetWidth ?? 1;
                 const swipe = info.offset.x;
                 const velocity = info.velocity.x;
